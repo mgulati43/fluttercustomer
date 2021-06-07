@@ -5,19 +5,32 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(MyApp());
+import 'OtpScreen.dart';
 
-
-
-class MyApp extends StatefulWidget {
-
-  @override
-  _MyAppState createState() => _MyAppState();
+void main() {
+  runApp(MyApp());
 }
 
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoginDemo(),
+    );
+  }
+}
 
+class LoginDemo extends StatefulWidget {
+  @override
+  _LoginDemoState createState() => _LoginDemoState();
+}
+
+class _LoginDemoState extends State<LoginDemo> {
+
+  final TextEditingController _phoneController = TextEditingController();
 
   void _otpenter() async {
     //get device id for android device
@@ -30,7 +43,7 @@ class _MyAppState extends State<MyApp> {
 //map of string and object type used in http post
     var map = new Map<String, dynamic>();
     //get mobile number from phone textfield
-    map['mobile_no'] = '9899988817';
+    map['mobile_no'] = _phoneController.text;
     map['device_id'] = 'ldnxlnlxdnlngnxlgk';
     map['notification_id'] = '123'; //otp here
     var url = Uri.parse(urlSent);
@@ -49,9 +62,10 @@ class _MyAppState extends State<MyApp> {
       String messageResponse = mapOtpResponse['data']['message'];
       //if messageResponse is invalid otp display the message of invalid otp
       //else proceed to homescreen
-      print('demo'+messageResponse);
+      print('demo' + messageResponse);
 
       if (messageResponse == 'Success') {
+
         Fluttertoast.showToast(
           msg: messageResponse,
           toastLength: Toast.LENGTH_SHORT,
@@ -59,7 +73,9 @@ class _MyAppState extends State<MyApp> {
           backgroundColor: Colors.red,
           textColor: Colors.black,
           fontSize: 16.0,
+
         );
+        _navigateToNextScreen(context);
         // Fluttertoast.showToast(
         //     msg: messageResponse,
         //     toastLength: Toast.LENGTH_SHORT,
@@ -77,7 +93,7 @@ class _MyAppState extends State<MyApp> {
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
-       // _navigateToNextScreen(context);
+        // _navigateToNextScreen(context);
       }
     } catch (e) {
       //Write exception statement here
@@ -86,43 +102,124 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _navigateToNextScreen(BuildContext context) {
-    //Navigator.of(context)
-        //.push(MaterialPageRoute(builder: (context) => HomePage()));
+    print('hii'+_phoneController.text);
+    _nameSaver( _phoneController.text);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => NotesPage()));
+  }
+
+  Future<String> _nameSaver(String mobileno) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('phone',  _phoneController.text);
+    return 'saved';
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
-            appBar: AppBar(title: Text('Login')),
-            body: Padding(
-                padding: EdgeInsets.all(15),
-                child: Column(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(19, 22, 40, 1),
+        title: Text("Smart Dine"),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          //crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 60.0),
+        child: Text('SIGN IN', style: TextStyle(
+          color: Colors.orange,
 
-                  children: <Widget>[
+          fontFamily: 'Courgette',
+          fontSize: 25.0,
+          fontWeight: FontWeight.bold,
+        ),
+        ),
+              ),
 
-                    Center(
+              //child: Center(
+              //   child: Container(
+              //       width: 200,
+              //       height: 150,
+              //       /*decoration: BoxDecoration(
+              //           color: Colors.red,
+              //           borderRadius: BorderRadius.circular(50.0)),*/
+              //       //child: Image.asset('asset/smartdine.jpeg')),
+              // ),
 
-                      child:TextField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Mobile number',
-                            hintText: 'Enter Your Mobile Number')
-                      )
-                        ),
+             Image(
+              image: AssetImage(
+                'assets/smartdine.jpeg'
 
+              ),
+               height: 150,
+               width: 150,
+            ),
 
+      Padding(
+        padding: const EdgeInsets.only(top: 30.0),
+        child: Text('ENTER YOUR MOBILE NUMBER', style: TextStyle(
+          color: Colors.orange,
 
+          fontFamily: 'Courgette',
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
+        ),
+      ),
 
-                    RaisedButton(
-                      textColor: Colors.white,
-                      color: Colors.blue,
+            Padding(
+              padding: const EdgeInsets.only(top: 30.0),
+              child: Text('We will send you a OTP message', style: TextStyle(
+                color: Colors.black,
 
-                      child: Text('Sign In'),
+                fontFamily: 'Courgette',
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold,
+              ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 0),
+              //padding: EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                controller: _phoneController,
 
-                      onPressed: () => _otpenter(),
-                    )
-                  ],
-                ))));
+                decoration: InputDecoration(
+                    //border: OutlineInputBorder(),
+                    labelText: 'Enter Mobile Number',
+                    hintText: 'Enter Mobile Number'),
+              ),
+            ),
+            FlatButton(
+
+              child: Text(
+                '',
+                style: TextStyle(color: Colors.blue, fontSize: 15),
+              ),
+              onPressed: () => _otpenter(),
+            ),
+            Container(
+              height: 50,
+              width: 250,
+              decoration: BoxDecoration(
+                  color: Colors.cyan, borderRadius: BorderRadius.circular(20)),
+              child: FlatButton(
+                onPressed: () => _otpenter(),
+                child: Text(
+                  'SEND OTP',
+                  style: TextStyle(color: Colors.orange, fontSize: 25),
+                ),
+              ),
+            ),
+
+            //Text('New User? Create Account')
+          ],
+        ),
+      ),
+    );
   }
 }
