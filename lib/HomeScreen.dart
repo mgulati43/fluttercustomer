@@ -10,23 +10,29 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<RestaurantJsonParser> restaurantList = [];
   List<RestaurantJsonParser> searchableRestaurantList = [];
-  
+
   TextEditingController editingController = TextEditingController();
   var _loading;
+  var bannerImage = [
+    "assets/burger.jpg",
+    "assets/cheesechilly.jpg",
+    "assets/noodles.jpg",
+    "assets/pizza.jpg"
+  ];
 
   @override
   void initState() {
     super.initState();
     _loading = true;
     callListApi();
-    
   }
 
   Widget _displayImage(String media) {
     if (media == null || media.isEmpty) {
-      return Image.asset('assets/dummyRestaurant.png');
+      return Image.asset('assets/dummyRestaurant.png',
+          width: 80, height: 80, fit: BoxFit.cover);
     } else {
-      return Image.network(media);
+      return Image.network(media, width: 80, height: 80, fit: BoxFit.cover);
     }
   }
 
@@ -49,7 +55,6 @@ class _HomePageState extends State<HomePage> {
       var jsonObjects = jsonDecode(decodedResponse)['spots'] as List;
 
       setState(() {
-
         restaurantList = jsonObjects
             .map((jsonObject) => RestaurantJsonParser.fromJson(jsonObject))
             .toList();
@@ -61,67 +66,153 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _searchBar(){
+  Widget _searchBar() {
     return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                onChanged: (value) {
-                  value = value.toLowerCase();
-                  setState(() {
-                    searchableRestaurantList = restaurantList.where((restaurant){
-                      var restaurantTitle = restaurant.name.toLowerCase();
-                      return restaurantTitle.contains(value);
-                    }).toList();
-                  });
-                },
-                controller: editingController,
-                decoration: InputDecoration(
-                    labelText: "Search",
-                    hintText: "Search",
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-              ),
-            );
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        onChanged: (value) {
+          value = value.toLowerCase();
+          setState(() {
+            searchableRestaurantList = restaurantList.where((restaurant) {
+              var restaurantTitle = restaurant.name.toLowerCase();
+              return restaurantTitle.contains(value);
+            }).toList();
+          });
+        },
+        controller: editingController,
+        decoration: InputDecoration(
+            labelText: "Search",
+            hintText: "Search",
+            prefixIcon: Icon(Icons.search),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+      ),
+    );
   }
 
-
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+    PageController controller =
+        PageController(viewportFraction: 0.8, initialPage: 1);
+    List<Widget> banners = [];
+
+    for (int x = 0; x < bannerImage.length; x++) {
+      var bannerView = Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Container(
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black38,
+                          offset: Offset(2.0, 2.0),
+                          blurRadius: 5.0,
+                          spreadRadius: 1.0)
+                    ]),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                child: Image.asset(
+                  bannerImage[x],
+                  fit: BoxFit.cover,
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+      banners.add(bannerView);
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(19, 22, 40, 1),
         title: Text("Smart Dine"),
       ),
-      body: Column(
-          children: [
-            _searchBar(),
-            Expanded(
-              child: ListView.builder(
+      body: Column(children: [
+        _searchBar(),
+        Container(
+          width: screenWidth,
+          height: screenWidth * 9 / 16,
+          child: PageView(
+            controller: controller,
+            scrollDirection: Axis.horizontal,
+            children: banners,
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
               itemCount: searchableRestaurantList.length,
               itemBuilder: (context, index) {
-                return Card(
-                    child: ListTile(
-                        title: Text(searchableRestaurantList[index].name),
-                        trailing: Container(
-                          width: 40,
-                          height: 40,
-                          alignment: Alignment.center,
-                          color: Colors.orange,
-                          child: Text(searchableRestaurantList[index].rating,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        subtitle: Column(
-                          children: [
-                            Text(searchableRestaurantList[index].address),
-                          ],
-                        ),
-                        leading: _displayImage(searchableRestaurantList[index].image)));
+                return Padding(
+                  padding: EdgeInsets.all(2.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black12,
+                              spreadRadius: 2.0,
+                              blurRadius: 5.0),
+                        ]),
+                    margin: EdgeInsets.all(5.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ClipRRect(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10.0),
+                                bottomLeft: Radius.circular(10.0)),
+                            child: _displayImage(
+                              searchableRestaurantList[index].image,
+                            )),
+                        SizedBox(
+                          width: 250,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(searchableRestaurantList[index].name),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 2.0, bottom: 2.0),
+                                  child: Text(
+                                    searchableRestaurantList[index].address,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.black54,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                Text(
+                                  searchableRestaurantList[index].openingTime +
+                                      ' - ' +
+                                      searchableRestaurantList[index]
+                                          .closingTime,
+                                  style: TextStyle(
+                                      fontSize: 12.0, color: Colors.black54),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
               }),
-            )
-          ]),
+        )
+      ]),
     );
   }
 }
