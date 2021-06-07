@@ -1,10 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
-
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,6 +9,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<RestaurantJsonParser> restaurantList = [];
+  List<RestaurantJsonParser> searchableRestaurantList = [];
+  
+  TextEditingController editingController = TextEditingController();
   var _loading;
 
   @override
@@ -20,19 +19,16 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _loading = true;
     callListApi();
+    
   }
 
   Widget _displayImage(String media) {
-    if(media == null || media.isEmpty) {
+    if (media == null || media.isEmpty) {
       return Image.asset('assets/dummyRestaurant.png');
+    } else {
+      return Image.network(media);
     }
-    else{
-    return Image.network(media);
-    }
-
-
-
-    }
+  }
 
   void callListApi() async {
     var response;
@@ -50,19 +46,14 @@ class _HomePageState extends State<HomePage> {
           encoding: Encoding.getByName("utf-8"));
       decodedResponse = utf8.decode(response.bodyBytes);
 
-      print('demo' + decodedResponse);
-
       var jsonObjects = jsonDecode(decodedResponse)['spots'] as List;
-      print('testing' + jsonObjects.toString());
-      //print(jsonObjects);
-      //jsonObjects.map((jsonObject) => print(jsonObject)).toList();
 
       setState(() {
-        jsonObjects.map((jsonObject) => print('mayank' + jsonObject));
 
         restaurantList = jsonObjects
             .map((jsonObject) => RestaurantJsonParser.fromJson(jsonObject))
             .toList();
+        searchableRestaurantList = restaurantList;
       });
     } catch (e) {
       //Write exception statement here
@@ -70,25 +61,53 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Widget _searchBar(){
+    return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                onChanged: (value) {
+                  value = value.toLowerCase();
+                  setState(() {
+                    searchableRestaurantList = restaurantList.where((restaurant){
+                      var restaurantTitle = restaurant.name.toLowerCase();
+                      return restaurantTitle.contains(value);
+                    }).toList();
+                  });
+                },
+                controller: editingController,
+                decoration: InputDecoration(
+                    labelText: "Search",
+                    hintText: "Search",
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+              ),
+            );
+  }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(19, 22, 40, 1),
         title: Text("Smart Dine"),
       ),
-      body: Container(
-          child: ListView.builder(
-              itemCount: restaurantList.length,
+      body: Column(
+          children: [
+            _searchBar(),
+            Expanded(
+              child: ListView.builder(
+              itemCount: searchableRestaurantList.length,
               itemBuilder: (context, index) {
                 return Card(
                     child: ListTile(
-                        title: Text(restaurantList[index].name),
+                        title: Text(searchableRestaurantList[index].name),
                         trailing: Container(
                           width: 40,
                           height: 40,
                           alignment: Alignment.center,
                           color: Colors.orange,
-                          child: Text(restaurantList[index].rating,
+                          child: Text(searchableRestaurantList[index].rating,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 15.0,
@@ -96,18 +115,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                         subtitle: Column(
                           children: [
-                            Text(restaurantList[index].address),
+                            Text(searchableRestaurantList[index].address),
                           ],
                         ),
-                        leading: _displayImage(restaurantList[index].image)
-                    )
-                );
-              }
-              )
-      ),
+                        leading: _displayImage(searchableRestaurantList[index].image)));
+              }),
+            )
+          ]),
     );
-
-
   }
 }
 
