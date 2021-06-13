@@ -4,17 +4,9 @@ import 'package:flutter/material.dart';
 import 'HomeScreen.dart';
 
 class RestDetail extends StatelessWidget {
-
-
-
-  final RestaurantJsonParser rest= null;
-
-
-
+  final RestaurantJsonParser rest;
   // receive data from the FirstScreen as a parameter
-  RestDetail({Key key, @required this.rest}) : super(key: key);
-
-
+  RestDetail({required this.rest});
 
   @override
   Widget build(BuildContext context) {

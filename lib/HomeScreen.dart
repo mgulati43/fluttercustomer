@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   Widget _displayImage(String path) {
     if (path == null || path.isEmpty) {
       return Image.asset('assets/dummyRestaurant.png',
-          width: 100, height: 120, fit: BoxFit.cover);
+          width: 100, height: 100, fit: BoxFit.cover);
     } else {
       return Image.network(path, width: 100, height: 100, fit: BoxFit.cover);
     }
@@ -217,8 +217,8 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Align(
-                                      alignment: Alignment.topRight,
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 4.0),
                                       child: ElevatedButton(
                                         style: ButtonStyle(
                                             backgroundColor:

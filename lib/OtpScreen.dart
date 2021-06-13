@@ -1,16 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:http/http.dart' as http;
-
-
 import 'package:pinput/pin_put/pin_put.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'HomeScreen.dart';
 
 class NotesPage extends StatefulWidget {
@@ -20,14 +13,6 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   String mobileno = '';
-
-  _nameRetriever() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    mobileno = prefs.getString('phone').toString();
-
-    print('testing' + mobileno);
-  }
 
   final FocusNode _pinPutFocusNode = FocusNode();
   final TextEditingController _pinPutController = TextEditingController();
@@ -43,7 +28,6 @@ class _NotesPageState extends State<NotesPage> {
   void _otpenter(String otp) async {
 
     if(!(otp=='')) {
-      //_nameRetriever();
       //get device id for android device
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -54,7 +38,7 @@ class _NotesPageState extends State<NotesPage> {
       //API call here for verifying otp
       var urlSent = Uri.encodeFull(
           'http://35.154.190.204/Restaurant/index.php/customer/Api/verification_otp_customer');
-//map of string and object type used in http post
+      //map of string and object type used in http post
       var map = new Map<String, dynamic>();
       //get mobile number from phone textfield
       map['mobile_no'] = mobileno;
@@ -76,7 +60,6 @@ class _NotesPageState extends State<NotesPage> {
         String messageResponse = mapOtpResponse['data']['message'];
         //if messageResponse is invalid otp display the message of invalid otp
         //else proceed to homescreen
-        print('demo' + messageResponse);
 
         if (messageResponse == 'success') {
           Fluttertoast.showToast(
@@ -88,14 +71,6 @@ class _NotesPageState extends State<NotesPage> {
             fontSize: 16.0,
           );
           _navigateToNextScreen(context);
-          // Fluttertoast.showToast(
-          //     msg: messageResponse,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.CENTER,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.red,
-          //     textColor: Colors.black,
-          //     fontSize: 16.0);
         } else {
           Fluttertoast.showToast(
               msg: 'Failure',
@@ -105,7 +80,6 @@ class _NotesPageState extends State<NotesPage> {
               backgroundColor: Colors.red,
               textColor: Colors.white,
               fontSize: 16.0);
-          // _navigateToNextScreen(context);
         }
       } catch (e) {
         //Write exception statement here
@@ -123,12 +97,10 @@ class _NotesPageState extends State<NotesPage> {
             textColor: Colors.white,
             fontSize: 16.0);
       }
-
   }
 
   Widget _buildOTP() {
     return Container(
-      //color: Colors.white,
       padding: EdgeInsets.all(20.0),
       child: PinPut(
         fieldsCount: 4,
@@ -149,7 +121,6 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void _navigateToNextScreen(BuildContext context) {
-
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => HomePage()));
   }
@@ -164,7 +135,6 @@ class _NotesPageState extends State<NotesPage> {
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          //crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 60.0),
@@ -211,7 +181,6 @@ class _NotesPageState extends State<NotesPage> {
                 ),
               ),
             ),
-
             Center(
               child: Container(
                 color: Colors.orange,
@@ -237,7 +206,6 @@ class _NotesPageState extends State<NotesPage> {
                 ),
               ),
             ),
-
             Container(
               margin: const EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 25, bottom: 0),
@@ -253,20 +221,9 @@ class _NotesPageState extends State<NotesPage> {
                 ),
               ),
             ),
-
-            //Text('New User? Create Account')
           ],
         ),
       ),
     );
-    //child: Center(
-    //   child: Container(
-    //       width: 200,
-    //       height: 150,
-    //       /*decoration: BoxDecoration(
-    //           color: Colors.red,
-    //           borderRadius: BorderRadius.circular(50.0)),*/
-    //       //child: Image.asset('asset/smartdine.jpeg')),
-    // ),
   }
 }
