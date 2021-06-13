@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'HomeScreen.dart';
 import 'OtpScreen.dart';
 
 void main() {
@@ -23,96 +24,184 @@ class MyApp extends StatelessWidget {
   }
 }
 
+getStringValuesSF() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return String
+  String? stringValue = prefs.getString('name');
+  return stringValue;
+}
+
 class LoginDemo extends StatefulWidget {
   @override
   _LoginDemoState createState() => _LoginDemoState();
 }
 
 class _LoginDemoState extends State<LoginDemo> {
-
   final TextEditingController _phoneController = TextEditingController();
+
+  String mobileno = '';
+
+  @override
+  void initState() {
+    super.initState();
+    checkMobile();
+  }
+
+  void checkMobile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    mobileno = prefs.getString('phone').toString();
+    print('mayank'+mobileno);
+    if (mobileno=='null') {
+      // Fluttertoast.showToast(
+      //   msg: 'Nothing'+mobileno,
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.SNACKBAR,
+      //   backgroundColor: Colors.red,
+      //   textColor: Colors.black,
+      //   fontSize: 16.0,
+      // );
+    } else {
+      // Fluttertoast.showToast(
+      //   msg: 'navigate'+mobileno,
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.SNACKBAR,
+      //   backgroundColor: Colors.red,
+      //   textColor: Colors.black,
+      //   fontSize: 16.0,
+      // );
+      _navigateToHomeScreen(context);
+    }
+  }
+
+  void _navigateToHomeScreen(BuildContext context) {
+    print('hii' + _phoneController.text);
+    _nameSaver(_phoneController.text);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => HomePage()));
+  }
+
+
+
+
+
+    void _navigateToNextScreen(BuildContext context) {
+    print('hii' + _phoneController.text);
+    _nameSaver(_phoneController.text);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => NotesPage()));
+  }
+
+
+
 
   void _otpenter() async {
     //get device id for android device
+    if (_phoneController.text == '') {
 
-    String decodedResponse = '';
-    String name;
-    //API call here for verifying otp
-    var urlSent = Uri.encodeFull(
-        'http://35.154.190.204/Restaurant/index.php/customer/Api/login');
-//map of string and object type used in http post
-    var map = new Map<String, dynamic>();
-    //get mobile number from phone textfield
-    map['mobile_no'] = _phoneController.text;
-    map['device_id'] = 'ldnxlnlxdnlngnxlgk';
-    map['notification_id'] = '123'; //otp here
-    var url = Uri.parse(urlSent);
-    var response;
-    //http request by encoding request in utf8 format and decoding in utf8 format
-    //content type application/x-www-form-urlencoded
-    try {
-      response = await http.post(url,
-          body: map,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          encoding: Encoding.getByName("utf-8"));
-      decodedResponse = utf8.decode(response.bodyBytes);
-      //map of string and object type used for storing data coming from otp response
-      Map<String, dynamic> mapOtpResponse = jsonDecode(decodedResponse);
-      //fetch message Response status ie invalid otp or valid otp
-      String messageResponse = mapOtpResponse['data']['message'];
-      //if messageResponse is invalid otp display the message of invalid otp
-      //else proceed to homescreen
-      print('demo' + messageResponse);
-
-      if (messageResponse == 'Success') {
-
-        Fluttertoast.showToast(
-          msg: messageResponse,
+      Fluttertoast.showToast(
+          msg: 'Enter Mobile Number',
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.SNACKBAR,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
-          textColor: Colors.black,
-          fontSize: 16.0,
+          textColor: Colors.white,
+          fontSize: 16.0);
 
-        );
-        _navigateToNextScreen(context);
-        // Fluttertoast.showToast(
-        //     msg: messageResponse,
-        //     toastLength: Toast.LENGTH_SHORT,
-        //     gravity: ToastGravity.CENTER,
-        //     timeInSecForIosWeb: 1,
-        //     backgroundColor: Colors.red,
-        //     textColor: Colors.black,
-        //     fontSize: 16.0);
-      } else {
+    }
+    else
+    {
+      if(_phoneController.text.length==10)
+      {
+        String decodedResponse = '';
+        String name;
+        //API call here for verifying otp
+        var urlSent = Uri.encodeFull(
+            'http://35.154.190.204/Restaurant/index.php/customer/Api/login');
+//map of string and object type used in http post
+        var map = new Map<String, dynamic>();
+        //get mobile number from phone textfield
+        map['mobile_no'] = _phoneController.text;
+        map['device_id'] = 'ldnxlnlxdnlngnxlgk';
+        map['notification_id'] = '123'; //otp here
+        var url = Uri.parse(urlSent);
+        var response;
+        //http request by encoding request in utf8 format and decoding in utf8 format
+        //content type application/x-www-form-urlencoded
+        try {
+          response = await http.post(url,
+              body: map,
+              headers: {"Content-Type": "application/x-www-form-urlencoded"},
+              encoding: Encoding.getByName("utf-8"));
+          decodedResponse = utf8.decode(response.bodyBytes);
+          //map of string and object type used for storing data coming from otp response
+          Map<String, dynamic> mapOtpResponse = jsonDecode(decodedResponse);
+          //fetch message Response status ie invalid otp or valid otp
+          String messageResponse = mapOtpResponse['data']['message'];
+          //if messageResponse is invalid otp display the message of invalid otp
+          //else proceed to homescreen
+          print('demo' + messageResponse);
+
+          if (messageResponse == 'Success') {
+            Fluttertoast.showToast(
+              msg: messageResponse,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.SNACKBAR,
+              backgroundColor: Colors.red,
+              textColor: Colors.black,
+              fontSize: 16.0,
+            );
+            _navigateToNextScreen(context);
+            // Fluttertoast.showToast(
+            //     msg: messageResponse,
+            //     toastLength: Toast.LENGTH_SHORT,
+            //     gravity: ToastGravity.CENTER,
+            //     timeInSecForIosWeb: 1,
+            //     backgroundColor: Colors.red,
+            //     textColor: Colors.black,
+            //     fontSize: 16.0);
+          } else {
+            Fluttertoast.showToast(
+                msg: 'Failure',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0);
+            // _navigateToNextScreen(context);
+          }
+        } catch (e) {
+          //Write exception statement here
+
+        }
+      }
+      else
+      {
         Fluttertoast.showToast(
-            msg: 'Failure',
+            msg: 'Please Enter ten digit number',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
-        // _navigateToNextScreen(context);
       }
-    } catch (e) {
-      //Write exception statement here
-
     }
-  }
 
-  void _navigateToNextScreen(BuildContext context) {
-    print('hii'+_phoneController.text);
-    _nameSaver( _phoneController.text);
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => NotesPage()));
+
+
+
+
   }
 
   Future<String> _nameSaver(String mobileno) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('phone',  _phoneController.text);
+    prefs.setString('phone', _phoneController.text);
     return 'saved';
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -129,56 +218,56 @@ class _LoginDemoState extends State<LoginDemo> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 60.0),
-        child: Text('SIGN IN', style: TextStyle(
-          color: Colors.orange,
-
-          fontFamily: 'Courgette',
-          fontSize: 25.0,
-          fontWeight: FontWeight.bold,
-        ),
-        ),
+              child: Text(
+                'SIGN IN',
+                style: TextStyle(
+                  color: Colors.orange,
+                  fontFamily: 'Courgette',
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-
-              //child: Center(
-              //   child: Container(
-              //       width: 200,
-              //       height: 150,
-              //       /*decoration: BoxDecoration(
-              //           color: Colors.red,
-              //           borderRadius: BorderRadius.circular(50.0)),*/
-              //       //child: Image.asset('asset/smartdine.jpeg')),
-              // ),
-
-             Image(
-              image: AssetImage(
-                'assets/smartdine.jpeg'
-
-              ),
-               height: 150,
-               width: 150,
             ),
 
-      Padding(
-        padding: const EdgeInsets.only(top: 30.0),
-        child: Text('ENTER YOUR MOBILE NUMBER', style: TextStyle(
-          color: Colors.orange,
+            //child: Center(
+            //   child: Container(
+            //       width: 200,
+            //       height: 150,
+            //       /*decoration: BoxDecoration(
+            //           color: Colors.red,
+            //           borderRadius: BorderRadius.circular(50.0)),*/
+            //       //child: Image.asset('asset/smartdine.jpeg')),
+            // ),
 
-          fontFamily: 'Courgette',
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-        ),
-        ),
-      ),
+            Image(
+              image: AssetImage('assets/smartdine.jpeg'),
+              height: 150,
+              width: 150,
+            ),
 
             Padding(
               padding: const EdgeInsets.only(top: 30.0),
-              child: Text('We will send you a OTP message', style: TextStyle(
-                color: Colors.black,
-
-                fontFamily: 'Courgette',
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold,
+              child: Text(
+                'ENTER YOUR MOBILE NUMBER',
+                style: TextStyle(
+                  color: Colors.orange,
+                  fontFamily: 'Courgette',
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.only(top: 30.0),
+              child: Text(
+                'We will send you a OTP message',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'Courgette',
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Padding(
@@ -187,15 +276,14 @@ class _LoginDemoState extends State<LoginDemo> {
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
                 controller: _phoneController,
-
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                    //border: OutlineInputBorder(),
+                  //border: OutlineInputBorder(),
                     labelText: 'Enter Mobile Number',
                     hintText: 'Enter Mobile Number'),
               ),
             ),
             FlatButton(
-
               child: Text(
                 '',
                 style: TextStyle(color: Colors.blue, fontSize: 15),

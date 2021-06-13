@@ -6,17 +6,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'dart:collection';
-import 'dart:convert';
-import 'dart:io';
-import 'dart:async';
-import 'package:device_info/device_info.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:pinput/pin_put/pin_put.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'HomeScreen.dart';
@@ -49,74 +41,89 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void _otpenter(String otp) async {
-    //_nameRetriever();
-    //get device id for android device
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    mobileno = prefs.getString('phone').toString();
-    print('checking' + mobileno);
-    String decodedResponse = '';
-    String name;
-    //API call here for verifying otp
-    var urlSent = Uri.encodeFull(
-        'http://35.154.190.204/Restaurant/index.php/customer/Api/verification_otp_customer');
+    if(!(otp=='')) {
+      //_nameRetriever();
+      //get device id for android device
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      mobileno = prefs.getString('phone').toString();
+      print('checking' + mobileno);
+      String decodedResponse = '';
+      String name;
+      //API call here for verifying otp
+      var urlSent = Uri.encodeFull(
+          'http://35.154.190.204/Restaurant/index.php/customer/Api/verification_otp_customer');
 //map of string and object type used in http post
-    var map = new Map<String, dynamic>();
-    //get mobile number from phone textfield
-    map['mobile_no'] = mobileno;
-    map['device_id'] = 'ldnxlnlxdnlngnxlgk';
-    map['otp'] = otp; //otp here
-    var url = Uri.parse(urlSent);
-    var response;
-    //http request by encoding request in utf8 format and decoding in utf8 format
-    //content type application/x-www-form-urlencoded
-    try {
-      response = await http.post(url,
-          body: map,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          encoding: Encoding.getByName("utf-8"));
-      decodedResponse = utf8.decode(response.bodyBytes);
-      //map of string and object type used for storing data coming from otp response
-      Map<String, dynamic> mapOtpResponse = jsonDecode(decodedResponse);
-      //fetch message Response status ie invalid otp or valid otp
-      String messageResponse = mapOtpResponse['data']['message'];
-      //if messageResponse is invalid otp display the message of invalid otp
-      //else proceed to homescreen
-      print('demo' + messageResponse);
+      var map = new Map<String, dynamic>();
+      //get mobile number from phone textfield
+      map['mobile_no'] = mobileno;
+      map['device_id'] = 'ldnxlnlxdnlngnxlgk';
+      map['otp'] = otp; //otp here
+      var url = Uri.parse(urlSent);
+      var response;
+      //http request by encoding request in utf8 format and decoding in utf8 format
+      //content type application/x-www-form-urlencoded
+      try {
+        response = await http.post(url,
+            body: map,
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            encoding: Encoding.getByName("utf-8"));
+        decodedResponse = utf8.decode(response.bodyBytes);
+        //map of string and object type used for storing data coming from otp response
+        Map<String, dynamic> mapOtpResponse = jsonDecode(decodedResponse);
+        //fetch message Response status ie invalid otp or valid otp
+        String messageResponse = mapOtpResponse['data']['message'];
+        //if messageResponse is invalid otp display the message of invalid otp
+        //else proceed to homescreen
+        print('demo' + messageResponse);
 
-      if (messageResponse == 'success') {
+        if (messageResponse == 'success') {
+          Fluttertoast.showToast(
+            msg: messageResponse,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.SNACKBAR,
+            backgroundColor: Colors.red,
+            textColor: Colors.black,
+            fontSize: 16.0,
+          );
+          _navigateToNextScreen(context);
+          // Fluttertoast.showToast(
+          //     msg: messageResponse,
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.CENTER,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.red,
+          //     textColor: Colors.black,
+          //     fontSize: 16.0);
+        } else {
+          Fluttertoast.showToast(
+              msg: 'Failure',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          // _navigateToNextScreen(context);
+        }
+      } catch (e) {
+        //Write exception statement here
+
+      }
+    }
+    else
+      {
         Fluttertoast.showToast(
-          msg: messageResponse,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.SNACKBAR,
-          backgroundColor: Colors.red,
-          textColor: Colors.black,
-          fontSize: 16.0,
-        );
-        _navigateToNextScreen(context);
-        // Fluttertoast.showToast(
-        //     msg: messageResponse,
-        //     toastLength: Toast.LENGTH_SHORT,
-        //     gravity: ToastGravity.CENTER,
-        //     timeInSecForIosWeb: 1,
-        //     backgroundColor: Colors.red,
-        //     textColor: Colors.black,
-        //     fontSize: 16.0);
-      } else {
-        Fluttertoast.showToast(
-            msg: 'Failure',
+            msg: 'Enter OTP',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
-        // _navigateToNextScreen(context);
       }
-    } catch (e) {
-      //Write exception statement here
 
-    }
   }
 
   Widget _buildOTP() {

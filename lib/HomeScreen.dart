@@ -2,40 +2,57 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'RestaurantDetail.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  //restaurant list
   List<RestaurantJsonParser> restaurantList = [];
+  //filtered restaurant list initialized
   List<RestaurantJsonParser> searchableRestaurantList = [];
 
   TextEditingController editingController = TextEditingController();
   var _loading;
+  //list of images for banners
   var bannerImage = [
-    "assets/burger.jpg",
-    "assets/cheesechilly.jpg",
-    "assets/noodles.jpg",
-    "assets/pizza.jpg"
+    "assets/slider_i1.png",
+    "assets/slider_i2.jpg",
+    "assets/slider_i3.jpg",
+    "assets/slider_i5.png",
+    "assets/slider_i6.jpg",
+    "assets/slider_i7.jpg",
+    "assets/slider_i8.jpg",
   ];
 
   @override
   void initState() {
     super.initState();
     _loading = true;
+    //call api to populate restaurant list
     callListApi();
   }
 
-  Widget _displayImage(String media) {
-    if (media == null || media.isEmpty) {
+//display image of restaurant from server and display dummy image if no image from server
+  Widget _displayImage(String path) {
+    if (path == null || path.isEmpty) {
       return Image.asset('assets/dummyRestaurant.png',
-          width: 80, height: 80, fit: BoxFit.cover);
+          width: 100, height: 120, fit: BoxFit.cover);
     } else {
-      return Image.network(media, width: 80, height: 80, fit: BoxFit.cover);
+      return Image.network(path, width: 100, height: 100, fit: BoxFit.cover);
     }
   }
 
+  void _navigateDetailPage(
+      BuildContext context, RestaurantJsonParser restaurant) {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => RestDetail(rest: restaurant)));
+  }
+
+//calling post request fetching restaurant list
   void callListApi() async {
     var response;
     String decodedResponse = '';
@@ -43,6 +60,7 @@ class _HomePageState extends State<HomePage> {
     var urlSent = Uri.encodeFull(
         'http://35.154.190.204/Restaurant/index.php/customer/Api/getNearbySpots');
     var map = new Map<String, dynamic>();
+    //input parameter
     map['city'] = '';
     var url = Uri.parse(urlSent);
     try {
@@ -55,6 +73,7 @@ class _HomePageState extends State<HomePage> {
       var jsonObjects = jsonDecode(decodedResponse)['spots'] as List;
 
       setState(() {
+        //fetched restaurant list
         restaurantList = jsonObjects
             .map((jsonObject) => RestaurantJsonParser.fromJson(jsonObject))
             .toList();
@@ -69,17 +88,25 @@ class _HomePageState extends State<HomePage> {
   Widget _searchBar() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
+      //Textfield with icon of search in starting
       child: TextField(
+        //called when we enter or delete text in textfield
         onChanged: (value) {
           value = value.toLowerCase();
           setState(() {
+            //restaurant list filtered and stored in another list
+            //keyword where loops on restaurant list and each restaurant is returned which  is type of restaurant json parser
             searchableRestaurantList = restaurantList.where((restaurant) {
+              //fetchs restaurant name and convert it to lower case and store in a variable
               var restaurantTitle = restaurant.name.toLowerCase();
+              //checks whether name of restaurant in main list matches the value entered by user
               return restaurantTitle.contains(value);
             }).toList();
           });
         },
+        //controller of textfield to get text
         controller: editingController,
+        //labeltext,hinttext and border
         decoration: InputDecoration(
             labelText: "Search",
             hintText: "Search",
@@ -173,17 +200,45 @@ class _HomePageState extends State<HomePage> {
                             child: _displayImage(
                               searchableRestaurantList[index].image,
                             )),
-                        SizedBox(
-                          width: 250,
+                        Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(searchableRestaurantList[index].name),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      searchableRestaurantList[index].name,
+                                      style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Colors.red)),
+                                        onPressed: () => _navigateDetailPage(
+                                            context,
+                                            searchableRestaurantList[index]),
+                                        child: Text(
+                                          'SEE MENU',
+                                          style: TextStyle(
+                                              fontSize: 15.0,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 2.0, bottom: 2.0),
+                                  padding: const EdgeInsets.only(bottom: 2.0),
                                   child: Text(
                                     searchableRestaurantList[index].address,
                                     overflow: TextOverflow.ellipsis,
@@ -201,7 +256,8 @@ class _HomePageState extends State<HomePage> {
                                           .closingTime,
                                   style: TextStyle(
                                       fontSize: 12.0, color: Colors.black54),
-                                )
+                                ),
+                                Text(searchableRestaurantList[index].cuisines),
                               ],
                             ),
                           ),
