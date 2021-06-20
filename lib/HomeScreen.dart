@@ -210,27 +210,34 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Column(children: [
                                     Text(
                                       searchableRestaurantList[index].name,
                                       style: TextStyle(
-                                          fontSize: 20.0,
+                                          fontSize: 15.0,
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
                                     ),
+                                    Text(
+                                      searchableRestaurantList[index].name,
+                                      style: TextStyle(
+                                          fontSize: 10.0,
+                                          color: Colors.black,),
+                                    ),
+                                    ],),
                                     Padding(
                                       padding: EdgeInsets.only(right: 4.0),
                                       child: ElevatedButton(
                                         style: ButtonStyle(
                                             backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(Colors.red)),
+                                                MaterialStateProperty.all<Color>(Colors.red)),
                                         onPressed: () => _navigateDetailPage(
                                             context,
                                             searchableRestaurantList[index]),
                                         child: Text(
                                           'SEE MENU',
                                           style: TextStyle(
-                                              fontSize: 15.0,
+                                              fontSize: 12.0,
                                               color: Colors.white),
                                         ),
                                       ),
@@ -250,14 +257,16 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 Text(
-                                  searchableRestaurantList[index].openingTime +
-                                      ' - ' +
-                                      searchableRestaurantList[index]
-                                          .closingTime,
-                                  style: TextStyle(
-                                      fontSize: 12.0, color: Colors.black54),
-                                ),
-                                Text(searchableRestaurantList[index].cuisines),
+                                    searchableRestaurantList[index]
+                                            .openingTime +
+                                        ' - ' +
+                                        searchableRestaurantList[index]
+                                            .closingTime,
+                                    style: TextStyle(
+                                        fontSize: 12.0, color: Colors.black54)),
+                                Text(searchableRestaurantList[index].cuisines,
+                                    style: TextStyle(
+                                        fontSize: 12.0, color: Colors.black54)),
                               ],
                             ),
                           ),

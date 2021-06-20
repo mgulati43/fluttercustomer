@@ -11,134 +11,29 @@ class RestDetail extends StatefulWidget {
   RestDetail({required this.rest});
 }
 
-class FoodItem {
-  String menu_id=;
-  String qty;
-  String admin_id;
-  String menu_category_id;
-  String menu_name;
-  String rating;
-  String cat_id;
+class _RestDetailState extends State<RestDetail>
+    with SingleTickerProviderStateMixin {
+  TabController? _tabController;
+  List<MenuJsonParser> foodCategoryOne = [];
+  bool _loading = true;
 
-  String menu_image;
-  String menu_detail;
-  String menu_full_price;
-  String menu_half_price;
-  String menu_fix_price;
-
-  String cat_name;
-  String nutrient_counts;
-  String gst;
-  String menu_food_type;
-  String half_qty;
-  String full_qty;
-  String menu_full_price_gst;
-  String positions;
-  String shalfFull;
-  String quantityStatus;
-  String menu_fix_price_gst;
-  String message;
-  String status;
-  String quantityStatusHalf;
-  String quantityStatusFull;
-  String halfQuantityStatus;
-  String fullQuantityStatus;
-  String menu_half_price_gst;
-  String fullType;
-
-  FoodItem(
-      this.menu_id,
-      this.quantityStatus,
-      this.fullType,
-      this.halfQuantityStatus,
-      this.fullQuantityStatus,
-      this.quantityStatusHalf,
-      this.admin_id,
-      this.shalfFull,
-      this.menu_category_id,
-      this.quantityStatusFull,
-      this.positions,
-      this.menu_food_type,
-      this.menu_name,
-      this.rating,
-      this.cat_id,
-      this.full_qty,
-      this.qty,
-      this.half_qty,
-      this.menu_image,
-      this.menu_detail,
-      this.menu_full_price,
-      this.menu_half_price,
-      this.menu_fix_price,
-      this.cat_name,
-      this.nutrient_counts,
-      this.gst,
-      this.menu_half_price_gst,
-      this.menu_full_price_gst,
-      this.menu_fix_price_gst,
-      this.message,
-      this.status);
-  factory FoodItem.fromJson(dynamic json) {
-    return FoodItem(
-        json['menu_id'] as String,
-        json['menu_full_price_gst'] as String,
-        json['admin_id'] as String,
-        json['quantityStatus'] as String,
-        json['fullQuantityStatus'] as String,
-        json['fullType'] as String,
-        json['halfQuantityStatus'] as String,
-        json['quantityStatusFull'] as String,
-        json['quantityStatusHalf'] as String,
-        json['menu_category_id'] as String,
-        json['menu_food_type'] as String,
-        json['menu_name'] as String,
-        json['rating'] as String,
-        json['cat_id'] as String,
-        json['qty'] as String,
-        json['half_qty'] as String,
-        json['shalfFull'] as String,
-        json['menu_image'] as String,
-        json['menu_detail'] as String,
-        json['menu_full_price'] as String,
-        json['menu_half_price'] as String,
-        json['menu_fix_price'] as String,
-        json['positions'] as String,
-        json['cat_name'] as String,
-        json['nutrient_counts'] as String,
-        json['gst'] as String,
-        json['menu_half_price_gst'] as String,
-        json['full_qty'] as String,
-        json['menu_fix_price_gst'] as String,
-        json['message'] as String,
-        json['status'] as String);
-  }
-}
-
-class MenuJsonParser {
-  List<FoodItem> foodItem;
-  String sub_cat_name;
-  String sub_cat_id;
-  MenuJsonParser(
-      this.sub_cat_name,
-      this.sub_cat_id,
-      this.foodItem);
-
-
-
-  factory MenuJsonParser.fromJson(dynamic json) {
-    return MenuJsonParser(json['sub_cat_name'] as String,
-        json['sub_cat_id'] as String,
-        json['foodItem'] as List<FoodItem>);
-  }
-}
-
-class _RestDetailState extends State<RestDetail> {
   @override
   void initState() {
     // initialise your tab controller here
     callListApi();
-    //_tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     super.initState();
+  }
+
+  //display image of restaurant from server and display dummy image if no image from server
+  Widget _displayImage(Uint8List path) {
+    if (path.isEmpty) {
+      return Image.asset('assets/dummyRestaurant.png',
+          width: 100, height: 100, fit: BoxFit.cover);
+    } else {
+
+      return Image.memory(path, width: 100, height: 100, fit: BoxFit.cover);
+    }
   }
 
   void callListApi() async {
@@ -157,18 +52,14 @@ class _RestDetailState extends State<RestDetail> {
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
           encoding: Encoding.getByName("utf-8"));
       decodedResponse = utf8.decode(response.bodyBytes);
-      print('gulati' + decodedResponse.toString());
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
-      print('mayank' + jsonObjects.toString());
-      //var jsonObjects1 =
-          //jsonDecode(decodedResponse)['data']['foodItem'] as List;
-     // print('mayank' + jsonObjects.toString());
-      //jsonObjects.map((jsonObject) => print(jsonObject)).toList();
       setState(() {
-        //foodItems = jsonObjects
-        //.map((jsonObject) => MenuJsonParser.fromJson(jsonObject))
-        //.toList();
-        //print('debug' + foodItems.toString());
+        //fetched restaurant list
+        foodCategoryOne = jsonObjects.map((jsonObject) => MenuJsonParser.fromJson(jsonObject)).toList();
+
+        _loading = false;
+        
+        
       });
     } catch (e) {
       //Write exception statement here
@@ -191,33 +82,185 @@ class _RestDetailState extends State<RestDetail> {
                     fontSize: 15.0),
               ),
             )),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: Text(
-                widget.rest.name,
-                style: TextStyle(
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
+        body: _loading == false?
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+          child: Column(
+            children: <Widget>[
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(
+                  widget.rest.name,
+                  style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+                Text(widget.rest.address,
+                    style: TextStyle(fontSize: 12.0, color: Colors.black)),
+                Text('Cuisines ' + widget.rest.cuisines,
+                    style: TextStyle(fontSize: 12.0, color: Colors.black)),
+              ]),
+              TabBar(
+                controller: _tabController,
+                labelColor: Colors.green,
+                isScrollable: true,
+                indicatorColor: Colors.transparent,
+                unselectedLabelColor: Colors.grey,
+                unselectedLabelStyle: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w700,
+                ),
+                labelStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+                tabs: <Widget>[
+                  Text('BROTCHEN'),
+                  Text('KALTEGETRANKE'),
+                  Text('HEIBGETRANKE')
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: Text(widget.rest.address,
-                  style: TextStyle(fontSize: 16.0, color: Colors.black)),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: Text('Cuisines ' + widget.rest.cuisines,
-                  style: TextStyle(fontSize: 18.0, color: Colors.black)),
-            ),
-          ],
-        ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: <Widget>[
+                    ListView.builder(
+                        itemCount: foodCategoryOne.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black12,
+                                        spreadRadius: 2.0,
+                                        blurRadius: 5.0),
+                                  ]),
+                              margin: EdgeInsets.all(5.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10.0),
+                                          bottomLeft: Radius.circular(10.0)),
+                                      child: 
+                                      Image.memory(base64Decode(foodCategoryOne[index].menu_image),
+          width: 100, height: 100, fit: BoxFit.cover),
+                                      ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    foodCategoryOne[index].sub_cat_name,
+                                                    style: TextStyle(
+                                                        fontSize: 15.0,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    'COST: Rs ' +
+                                                        foodCategoryOne[index].menu_full_price,
+                                                    style: TextStyle(
+                                                      fontSize: 10.0,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(right: 4.0),
+                                                child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(
+                                                                  Colors.red)),
+                                                  onPressed: () => null,
+                                                  child: Text(
+                                                    'SEE MENU',
+                                                    style: TextStyle(
+                                                        fontSize: 12.0,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                    Center(
+                      child: Text(
+                        'HEIBGETRANKE',
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        'MILCHPPODUKE',
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ):
+        Container(
+          child: Image(
+          image: AssetImage(
+              'assets/loading.gif'),
+        )),
         backgroundColor: Colors.white,
       ),
+    );
+  }
+}
+
+class MenuJsonParser {
+  String sub_cat_name;
+  String sub_cat_id;
+  String menu_name;
+  String menu_full_price;
+  String menu_image;
+  
+  MenuJsonParser(this.sub_cat_name, this.sub_cat_id , this.menu_name, this.menu_full_price, this.menu_image);
+
+  factory MenuJsonParser.fromJson(dynamic json) {
+    return MenuJsonParser(
+      json['sub_cat_name'] as String,
+      json['sub_cat_id'] as String, 
+      json['foodItem'][0]['menu_name'] as String,
+      json['foodItem'][0]['menu_full_price'] as String,
+      json['foodItem'][0]['menu_image'] as String
     );
   }
 }
