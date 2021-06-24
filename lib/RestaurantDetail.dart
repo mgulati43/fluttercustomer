@@ -43,7 +43,7 @@ class _RestDetailState extends State<RestDetail>
     var urlSent = Uri.encodeFull(
         'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
     var map = new Map<String, dynamic>();
-    map['admin_id'] = 'ADMIN_00001';
+    map['admin_id'] = 'HRGR00001';
     map['cat_id'] = '1';
     var url = Uri.parse(urlSent);
     try {
@@ -52,14 +52,18 @@ class _RestDetailState extends State<RestDetail>
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
           encoding: Encoding.getByName("utf-8"));
       decodedResponse = utf8.decode(response.bodyBytes);
+
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
+
+
       setState(() {
+
         //fetched restaurant list
         foodCategoryOne = jsonObjects.map((jsonObject) => MenuJsonParser.fromJson(jsonObject)).toList();
 
         _loading = false;
-        
-        
+
+
       });
     } catch (e) {
       //Write exception statement here
@@ -134,7 +138,7 @@ class _RestDetailState extends State<RestDetail>
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0)),
+                                  BorderRadius.all(Radius.circular(10.0)),
                                   boxShadow: [
                                     BoxShadow(
                                         color: Colors.black12,
@@ -147,23 +151,23 @@ class _RestDetailState extends State<RestDetail>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   ClipRRect(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10.0),
-                                          bottomLeft: Radius.circular(10.0)),
-                                      child: 
-                                      Image.memory(base64Decode(foodCategoryOne[index].menu_image),
-          width: 100, height: 100, fit: BoxFit.cover),
-                                      ),
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10.0),
+                                        bottomLeft: Radius.circular(10.0)),
+                                    child:
+                                    Image.memory(base64Decode(foodCategoryOne[index].menu_image),
+                                        width: 100, height: 100, fit: BoxFit.cover),
+                                  ),
                                   Expanded(
                                     child: Padding(
                                       padding: const EdgeInsets.all(4.0),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                             children: [
                                               Column(
                                                 children: [
@@ -173,7 +177,7 @@ class _RestDetailState extends State<RestDetail>
                                                         fontSize: 15.0,
                                                         color: Colors.black,
                                                         fontWeight:
-                                                            FontWeight.bold),
+                                                        FontWeight.bold),
                                                   ),
                                                   Text(
                                                     'COST: Rs ' +
@@ -187,13 +191,13 @@ class _RestDetailState extends State<RestDetail>
                                               ),
                                               Padding(
                                                 padding:
-                                                    EdgeInsets.only(right: 4.0),
+                                                EdgeInsets.only(right: 4.0),
                                                 child: ElevatedButton(
                                                   style: ButtonStyle(
                                                       backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all<Color>(
-                                                                  Colors.red)),
+                                                      MaterialStateProperty
+                                                          .all<Color>(
+                                                          Colors.red)),
                                                   onPressed: () => null,
                                                   child: Text(
                                                     'SEE MENU',
@@ -235,10 +239,10 @@ class _RestDetailState extends State<RestDetail>
           ),
         ):
         Container(
-          child: Image(
-          image: AssetImage(
-              'assets/loading.gif'),
-        )),
+            child: Image(
+              image: AssetImage(
+                  'assets/loading.gif'),
+            )),
         backgroundColor: Colors.white,
       ),
     );
@@ -251,16 +255,37 @@ class MenuJsonParser {
   String menu_name;
   String menu_full_price;
   String menu_image;
-  
-  MenuJsonParser(this.sub_cat_name, this.sub_cat_id , this.menu_name, this.menu_full_price, this.menu_image);
+
+  MenuJsonParser(this.sub_cat_name, this.sub_cat_id, this.menu_name,
+      this.menu_full_price, this.menu_image);
+
+
 
   factory MenuJsonParser.fromJson(dynamic json) {
-    return MenuJsonParser(
-      json['sub_cat_name'] as String,
-      json['sub_cat_id'] as String, 
-      json['foodItem'][0]['menu_name'] as String,
-      json['foodItem'][0]['menu_full_price'] as String,
-      json['foodItem'][0]['menu_image'] as String
-    );
+    print(json['foodItem']);
+    print(json['foodItem'].isEmpty+"android");
+    if (json['foodItem'].isEmpty) {
+      return MenuJsonParser(
+          "",
+          "",
+          "",
+          "",
+          ""
+
+      );
+    }
+
+
+    else {
+      //print('ios');
+      return MenuJsonParser(
+          json['sub_cat_name'] as String,
+          json['sub_cat_id'] as String,
+          json['foodItem'][0]['menu_name'] as String,
+          json['foodItem'][0]['menu_name'] as String,
+          json['foodItem'][0]['menu_image'] as String
+
+      );
+    }
   }
 }

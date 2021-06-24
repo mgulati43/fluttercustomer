@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'sideBar.dart';
 import 'RestaurantDetail.dart';
 
 class HomePage extends StatefulWidget {
@@ -157,10 +157,12 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      drawer: SideBar(),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(19, 22, 40, 1),
         title: Text("Smart Dine"),
       ),
+
       body: Column(children: [
         _searchBar(),
         Container(
