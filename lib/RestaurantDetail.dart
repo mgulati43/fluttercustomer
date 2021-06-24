@@ -43,7 +43,7 @@ class _RestDetailState extends State<RestDetail>
     var urlSent = Uri.encodeFull(
         'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
     var map = new Map<String, dynamic>();
-    map['admin_id'] = 'ADMIN_00001';
+    map['admin_id'] = 'HRGR00001';
     map['cat_id'] = '1';
     var url = Uri.parse(urlSent);
     try {
@@ -52,11 +52,13 @@ class _RestDetailState extends State<RestDetail>
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
           encoding: Encoding.getByName("utf-8"));
       decodedResponse = utf8.decode(response.bodyBytes);
+      
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
+
       setState(() {
         //fetched restaurant list
         foodCategoryOne = jsonObjects.map((jsonObject) => MenuJsonParser.fromJson(jsonObject)).toList();
-
+        print(foodCategoryOne.toString());
         _loading = false;
         
         
@@ -255,12 +257,25 @@ class MenuJsonParser {
   MenuJsonParser(this.sub_cat_name, this.sub_cat_id , this.menu_name, this.menu_full_price, this.menu_image);
 
   factory MenuJsonParser.fromJson(dynamic json) {
-    return MenuJsonParser(
-      json['sub_cat_name'] as String,
-      json['sub_cat_id'] as String, 
-      json['foodItem'][0]['menu_name'] as String,
-      json['foodItem'][0]['menu_full_price'] as String,
-      json['foodItem'][0]['menu_image'] as String
-    );
+    print(json['foodItem'].isEmpty);
+
+    if(!json['foodItem'].isEmpty){
+        return MenuJsonParser(
+        json['sub_cat_name'] as String,
+        json['sub_cat_id'] as String, 
+        json['foodItem'][0]['menu_name'] as String,
+        json['foodItem'][0]['menu_full_price'] as String,
+        json['foodItem'][0]['menu_image'] as String
+      );
+    }
+    else{
+      return MenuJsonParser(
+        json['sub_cat_name'] as String,
+        json['sub_cat_id'] as String, 
+        '',
+        '',
+        ''
+      );
+    }
   }
 }
