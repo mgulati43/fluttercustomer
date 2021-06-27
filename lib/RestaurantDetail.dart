@@ -15,12 +15,14 @@ class _RestDetailState extends State<RestDetail>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   List<MenuJsonParser> foodCategoryOne = [];
+  List<MenuJsonParser> foodCategoryTwo = [];
   bool _loading = true;
 
   @override
   void initState() {
     // initialise your tab controller here
-    callListApi();
+    callListApi('1');
+    callListApiTwo('2');
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
@@ -36,7 +38,7 @@ class _RestDetailState extends State<RestDetail>
     }
   }
 
-  void callListApi() async {
+  void callListApi(String cat_id) async {
     var response;
     String decodedResponse = '';
     //API call here
@@ -44,7 +46,7 @@ class _RestDetailState extends State<RestDetail>
         'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
     var map = new Map<String, dynamic>();
     map['admin_id'] = 'HRGR00001';
-    map['cat_id'] = '1';
+    map['cat_id'] = cat_id;
     var url = Uri.parse(urlSent);
     try {
       response = await http.post(url,
@@ -55,12 +57,43 @@ class _RestDetailState extends State<RestDetail>
 
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
 
-
       setState(() {
-
         //fetched restaurant list
         foodCategoryOne = jsonObjects.map((jsonObject) => MenuJsonParser.fromJson(jsonObject)).toList();
+        print(foodCategoryOne.toString());
+        _loading = false;
 
+
+      });
+    } catch (e) {
+      //Write exception statement here
+
+    }
+  }
+
+  void callListApiTwo(String cat_id) async {
+    var response;
+    String decodedResponse = '';
+    //API call here
+    var urlSent = Uri.encodeFull(
+        'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
+    var map = new Map<String, dynamic>();
+    map['admin_id'] = 'HRGR00001';
+    map['cat_id'] = cat_id;
+    var url = Uri.parse(urlSent);
+    try {
+      response = await http.post(url,
+          body: map,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+          encoding: Encoding.getByName("utf-8"));
+      decodedResponse = utf8.decode(response.bodyBytes);
+
+      var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
+
+      setState(() {
+        //fetched restaurant list
+        foodCategoryTwo = jsonObjects.map((jsonObject) => MenuJsonParser.fromJson(jsonObject)).toList();
+        print(foodCategoryTwo.toString());
         _loading = false;
 
 
@@ -155,8 +188,9 @@ class _RestDetailState extends State<RestDetail>
                                         topLeft: Radius.circular(10.0),
                                         bottomLeft: Radius.circular(10.0)),
                                     child:
-                                    Image.memory(base64Decode(foodCategoryOne[index].menu_image),
-                                        width: 100, height: 100, fit: BoxFit.cover),
+                                    _displayImage(base64Decode(foodCategoryOne[index].menu_image)),
+                                    //Image.memory(base64Decode(foodCategoryOne[index].menu_image),
+                                        //width: 100, height: 100, fit: BoxFit.cover),
                                   ),
                                   Expanded(
                                     child: Padding(
@@ -187,6 +221,8 @@ class _RestDetailState extends State<RestDetail>
                                                       color: Colors.black,
                                                     ),
                                                   ),
+
+
                                                 ],
                                               ),
                                               Padding(
@@ -218,13 +254,99 @@ class _RestDetailState extends State<RestDetail>
                             ),
                           );
                         }),
-                    Center(
-                      child: Text(
-                        'HEIBGETRANKE',
-                        style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.w600),
-                      ),
-                    ),
+                    ListView.builder(
+                        itemCount: foodCategoryTwo.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black12,
+                                        spreadRadius: 2.0,
+                                        blurRadius: 5.0),
+                                  ]),
+                              margin: EdgeInsets.all(5.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10.0),
+                                        bottomLeft: Radius.circular(10.0)),
+                                    child:
+                                    _displayImage(base64Decode(foodCategoryTwo[index].menu_image)),
+                                    //Image.memory(base64Decode(foodCategoryOne[index].menu_image),
+                                    //width: 100, height: 100, fit: BoxFit.cover),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    foodCategoryTwo[index].sub_cat_name,
+                                                    style: TextStyle(
+                                                        fontSize: 15.0,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                        FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    'COST: Rs ' +
+                                                        foodCategoryTwo[index].menu_full_price,
+                                                    style: TextStyle(
+                                                      fontSize: 10.0,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+
+
+                                                ],
+                                              ),
+                                              Padding(
+                                                padding:
+                                                EdgeInsets.only(right: 4.0),
+                                                child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                      backgroundColor:
+                                                      MaterialStateProperty
+                                                          .all<Color>(
+                                                          Colors.red)),
+                                                  onPressed: () => null,
+                                                  child: Text(
+                                                    'SEE MENU',
+                                                    style: TextStyle(
+                                                        fontSize: 12.0,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+
                     Center(
                       child: Text(
                         'MILCHPPODUKE',
@@ -235,8 +357,11 @@ class _RestDetailState extends State<RestDetail>
                   ],
                 ),
               ),
+            Text('demo'),
             ],
           ),
+
+
         ):
         Container(
             child: Image(
@@ -246,6 +371,7 @@ class _RestDetailState extends State<RestDetail>
         backgroundColor: Colors.white,
       ),
     );
+
   }
 }
 
@@ -256,35 +382,27 @@ class MenuJsonParser {
   String menu_full_price;
   String menu_image;
 
-  MenuJsonParser(this.sub_cat_name, this.sub_cat_id, this.menu_name,
-      this.menu_full_price, this.menu_image);
-
-
+  MenuJsonParser(this.sub_cat_name, this.sub_cat_id , this.menu_name, this.menu_full_price, this.menu_image);
 
   factory MenuJsonParser.fromJson(dynamic json) {
-    print(json['foodItem']);
-    print(json['foodItem'].isEmpty+"android");
-    if (json['foodItem'].isEmpty) {
-      return MenuJsonParser(
-          "",
-          "",
-          "",
-          "",
-          ""
+    print(json['foodItem'].isEmpty);
 
-      );
-    }
-
-
-    else {
-      //print('ios');
+    if(!json['foodItem'].isEmpty){
       return MenuJsonParser(
           json['sub_cat_name'] as String,
           json['sub_cat_id'] as String,
           json['foodItem'][0]['menu_name'] as String,
-          json['foodItem'][0]['menu_name'] as String,
+          json['foodItem'][0]['menu_full_price'] as String,
           json['foodItem'][0]['menu_image'] as String
-
+      );
+    }
+    else{
+      return MenuJsonParser(
+          json['sub_cat_name'] as String,
+          json['sub_cat_id'] as String,
+          '',
+          '',
+          ''
       );
     }
   }
