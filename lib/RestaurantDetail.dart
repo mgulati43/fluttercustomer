@@ -190,7 +190,7 @@ class _RestDetailState extends State<RestDetail>
                                     child:
                                     _displayImage(base64Decode(foodCategoryOne[index].menu_image)),
                                     //Image.memory(base64Decode(foodCategoryOne[index].menu_image),
-                                        //width: 100, height: 100, fit: BoxFit.cover),
+                                    //width: 100, height: 100, fit: BoxFit.cover),
                                   ),
                                   Expanded(
                                     child: Padding(
@@ -357,7 +357,7 @@ class _RestDetailState extends State<RestDetail>
                   ],
                 ),
               ),
-            Text('demo'),
+              Text('demo'),
             ],
           ),
 
