@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'sideBar.dart';
 import 'RestaurantDetail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -48,6 +50,15 @@ class _HomePageState extends State<HomePage> {
 
   void _navigateDetailPage(
       BuildContext context, RestaurantJsonParser restaurant) {
+    Fluttertoast.showToast(
+      msg: restaurant.admin_id,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.SNACKBAR,
+      backgroundColor: Colors.red,
+      textColor: Colors.black,
+      fontSize: 16.0,
+    );
+
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => RestDetail(rest: restaurant)));
   }
@@ -71,6 +82,10 @@ class _HomePageState extends State<HomePage> {
       decodedResponse = utf8.decode(response.bodyBytes);
 
       var jsonObjects = jsonDecode(decodedResponse)['spots'] as List;
+      print('mayank'+jsonObjects.toString());
+      Map<String, dynamic> mapOtpResponse = jsonDecode(decodedResponse);
+      //fetch message Response status ie invalid otp or valid otp
+     // String messageResponse = mapOtpResponse['spots']['admin_id'];
 
       setState(() {
         //fetched restaurant list
@@ -86,6 +101,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _searchBar() {
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       //Textfield with icon of search in starting
@@ -109,7 +125,7 @@ class _HomePageState extends State<HomePage> {
         //labeltext,hinttext and border
         decoration: InputDecoration(
             labelText: "Search",
-            hintText: "Search",
+            hintText: "Search by restaurant name",
             prefixIcon: Icon(Icons.search),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(25.0)))),
@@ -197,8 +213,8 @@ class _HomePageState extends State<HomePage> {
                       children: <Widget>[
                         ClipRRect(
                             borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0)),
+                                topLeft: Radius.circular(0.0),
+                                bottomLeft: Radius.circular(0.0)),
                             child: _displayImage(
                               searchableRestaurantList[index].image,
                             )),
@@ -220,30 +236,14 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Text(
-                                      searchableRestaurantList[index].name,
-                                      style: TextStyle(
-                                          fontSize: 10.0,
-                                          color: Colors.black,),
-                                    ),
+                                    // Text(
+                                    //   searchableRestaurantList[index].name,
+                                    //   style: TextStyle(
+                                    //       fontSize: 20.0,
+                                    //       color: Colors.black,),
+                                    // ),
                                     ],),
-                                    Padding(
-                                      padding: EdgeInsets.only(right: 4.0),
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<Color>(Colors.red)),
-                                        onPressed: () => _navigateDetailPage(
-                                            context,
-                                            searchableRestaurantList[index]),
-                                        child: Text(
-                                          'SEE MENU',
-                                          style: TextStyle(
-                                              fontSize: 12.0,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
+
                                   ],
                                 ),
                                 Padding(
@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                                     searchableRestaurantList[index].address,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      fontSize: 12.0,
+                                      fontSize: 20.0,
                                       color: Colors.black54,
                                     ),
                                     maxLines: 1,
@@ -265,10 +265,42 @@ class _HomePageState extends State<HomePage> {
                                         searchableRestaurantList[index]
                                             .closingTime,
                                     style: TextStyle(
-                                        fontSize: 12.0, color: Colors.black54)),
-                                Text(searchableRestaurantList[index].cuisines,
-                                    style: TextStyle(
-                                        fontSize: 12.0, color: Colors.black54)),
+                                        fontSize: 15.0, color: Colors.black54)),
+
+
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+
+                                    Container(
+
+                                    width: 170,
+                                      child: Text('Cuisines '+searchableRestaurantList[index].cuisines,
+                                          style: TextStyle(
+                                              fontSize: 15.0, color: Colors.black54)),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 4.0),
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                            MaterialStateProperty.all<Color>(Colors.red)),
+                                        onPressed: () => _navigateDetailPage(
+                                            context,
+                                            searchableRestaurantList[index]),
+                                        child: Text(
+                                          'SEE MENU',
+
+                                          style: TextStyle(
+                                              fontSize: 12.0,
+
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -284,10 +316,17 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+Future<String> _nameSaver(String admin_id) async {
+  //SharedPreferences prefs = await SharedPreferences.getInstance();
+  //prefs.setString('admin_id', admin_id);
+  return 'saved';
+}
+
 class RestaurantJsonParser {
   //String time;
-  String verified;
   String admin_id;
+  String verified;
+
   String city;
   String spotId;
   String trending;
@@ -332,9 +371,10 @@ class RestaurantJsonParser {
 
   factory RestaurantJsonParser.fromJson(dynamic json) {
     return RestaurantJsonParser(
+      json['admin_id'] as String,
       json['verified'] as String,
       //json['time'] as String,
-      json['admin_id'] as String,
+
       json['city'] as String,
       json['spotId'] as String,
       json['trending'] as String,
