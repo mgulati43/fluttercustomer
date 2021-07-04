@@ -50,14 +50,6 @@ class _HomePageState extends State<HomePage> {
 
   void _navigateDetailPage(
       BuildContext context, RestaurantJsonParser restaurant) {
-    Fluttertoast.showToast(
-      msg: restaurant.admin_id,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.SNACKBAR,
-      backgroundColor: Colors.red,
-      textColor: Colors.black,
-      fontSize: 16.0,
-    );
 
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => RestDetail(rest: restaurant)));

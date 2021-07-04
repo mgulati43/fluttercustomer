@@ -9,14 +9,6 @@ class RestDetail extends StatefulWidget {
   final RestaurantJsonParser rest;
 // receive data from the FirstScreen as a parameter
   RestDetail({required this.rest});
-  // Fluttertoast.showToast(
-  // msg: rest.admin_id,
-  // toastLength: Toast.LENGTH_SHORT,
-  // gravity: ToastGravity.SNACKBAR,
-  // backgroundColor: Colors.red,
-  // textColor: Colors.black,
-  // fontSize: 16.0,
-  // );
 }
 
 class _RestDetailState extends State<RestDetail>
@@ -26,16 +18,16 @@ class _RestDetailState extends State<RestDetail>
   List<MenuJsonParser> foodCategoryTwo = [];
   List<MenuJsonParser> foodCategoryThree = [];
   List<MenuJsonParser> foodCategoryFour = [];
+  List completeList = [];
   bool _loading = true;
+  List<String> categoryList = [];
 
   @override
   void initState() {
     // initialise your tab controller here
-    callListApi('1');
-    callListApiTwo('2');
-    callListApiThree('3');
-    callListApiFour('4');
-    _tabController = TabController(length: 4, vsync: this);
+    categoryList = ['Main Course', 'Beverages', 'Sweets', 'Desserts'];
+    callAPIinLoop();
+    _tabController = TabController(length: categoryList.length, vsync: this);
     super.initState();
   }
 
@@ -49,7 +41,13 @@ class _RestDetailState extends State<RestDetail>
     }
   }
 
-  void callListApi(String cat_id) async {
+  void callAPIinLoop() async {
+    for (int cat = 1; cat <= categoryList.length; cat++) {
+      await callListApi(cat);
+    }
+  }
+
+  Future<void> callListApi(int cat_id) async {
     var response;
     String decodedResponse = '';
     //API call here
@@ -57,7 +55,7 @@ class _RestDetailState extends State<RestDetail>
         'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
     var map = new Map<String, dynamic>();
     map['admin_id'] = 'HRGR00001';
-    map['cat_id'] = cat_id;
+    map['cat_id'] = cat_id.toString();
     var url = Uri.parse(urlSent);
     try {
       response = await http.post(url,
@@ -67,14 +65,14 @@ class _RestDetailState extends State<RestDetail>
       decodedResponse = utf8.decode(response.bodyBytes);
 
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
-
       setState(() {
-        //fetched restaurant list
-        foodCategoryOne = jsonObjects
+        completeList.add(jsonObjects
             .map((jsonObject) => MenuJsonParser.fromJson(jsonObject))
-            .toList();
-        print('one' + foodCategoryOne.toString());
-        _loading = false;
+            .toList());
+
+        if (cat_id == categoryList.length) {
+          _loading = false;
+        }
       });
     } catch (e) {
       //Write exception statement here
@@ -82,103 +80,151 @@ class _RestDetailState extends State<RestDetail>
     }
   }
 
-  void callListApiTwo(String cat_id) async {
-    var response;
-    String decodedResponse = '';
-    //API call here
-    var urlSent = Uri.encodeFull(
-        'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
-    var map = new Map<String, dynamic>();
-    map['admin_id'] = 'HRGR00001';
-    map['cat_id'] = cat_id;
-    var url = Uri.parse(urlSent);
-    try {
-      response = await http.post(url,
-          body: map,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          encoding: Encoding.getByName("utf-8"));
-      decodedResponse = utf8.decode(response.bodyBytes);
+  void addToCart(MenuJsonParser menuItem){
+        setState(() {
+        menuItem.quantity++;
+    });
+  }
 
-      var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
-
+  void removeFromCart(MenuJsonParser menuItem){
+    if(menuItem.quantity != 0){
       setState(() {
-        //fetched restaurant list
-        foodCategoryTwo = jsonObjects
-            .map((jsonObject) => MenuJsonParser.fromJson(jsonObject))
-            .toList();
-        print('two' + foodCategoryTwo.toString());
-        _loading = false;
+        menuItem.quantity--;
       });
-    } catch (e) {
-      //Write exception statement here
-
     }
   }
 
-  void callListApiThree(String cat_id) async {
-    var response;
-    String decodedResponse = '';
-    //API call here
-    var urlSent = Uri.encodeFull(
-        'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
-    var map = new Map<String, dynamic>();
-    map['admin_id'] = 'HRGR00001';
-    map['cat_id'] = cat_id;
-    var url = Uri.parse(urlSent);
-    try {
-      response = await http.post(url,
-          body: map,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          encoding: Encoding.getByName("utf-8"));
-      decodedResponse = utf8.decode(response.bodyBytes);
-
-      var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
-
-      setState(() {
-        //fetched restaurant list
-        foodCategoryThree = jsonObjects
-            .map((jsonObject) => MenuJsonParser.fromJson(jsonObject))
-            .toList();
-        print('three' + foodCategoryThree.toString());
-        _loading = false;
-      });
-    } catch (e) {
-      //Write exception statement here
-
+  List<Widget> tabHeaders() {
+    List<Widget> headersReturn = [];
+    for (int cat = 0; cat < categoryList.length; cat++) {
+      headersReturn.add(Text(categoryList[cat]));
     }
+    return headersReturn;
   }
 
-  void callListApiFour(String cat_id) async {
-    var response;
-    String decodedResponse = '';
-    //API call here
-    var urlSent = Uri.encodeFull(
-        'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
-    var map = new Map<String, dynamic>();
-    map['admin_id'] = 'HRGR00001';
-    map['cat_id'] = cat_id;
-    var url = Uri.parse(urlSent);
-    try {
-      response = await http.post(url,
-          body: map,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          encoding: Encoding.getByName("utf-8"));
-      decodedResponse = utf8.decode(response.bodyBytes);
+  List<Widget> tabDataEach() {
+    List<Widget> widgetReturn = [];
 
-      var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
-
-      setState(() {
-        //fetched restaurant list
-        foodCategoryFour = jsonObjects
-            .map((jsonObject) => MenuJsonParser.fromJson(jsonObject))
-            .toList();
-        print('three' + foodCategoryFour.toString());
-        _loading = false;
-      });
-    } catch (e) {
-      //Write exception statement here
-
+    for (int cat = 0; cat < categoryList.length; cat++) {
+      widgetReturn.add(
+        ListView.builder(
+            itemCount: completeList[cat].length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.all(2.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black12,
+                            spreadRadius: 2.0,
+                            blurRadius: 5.0),
+                      ]),
+                  margin: EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10.0),
+                            bottomLeft: Radius.circular(10.0)),
+                        child: _displayImage(
+                            base64Decode(completeList[cat][index].menu_image)),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        completeList[cat][index].sub_cat_name,
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        'COST: Rs ' +
+                                            completeList[cat][index]
+                                                .menu_full_price,
+                                        style: TextStyle(
+                                          fontSize: 10.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.red),
+                                        borderRadius: BorderRadius.circular(4)),
+                                    child: Row(
+                                      children: [
+                                        InkWell(
+                                            onTap: () => removeFromCart(completeList[cat][index]), 
+                                            child: Container(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 3, right: 3),
+                                                child: Icon(
+                                                  Icons.delete_outline,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            )),
+                                        Container(
+                                            height: double.infinity,
+                                            width: 30,
+                                            color: Colors.red,
+                                            child: Center(
+                                                child: Text(
+                                              completeList[cat][index]
+                                                  .quantity
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ))),
+                                        InkWell(
+                                            onTap: () => addToCart(completeList[cat][index]),
+                                            child: Container(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 3, right: 3),
+                                                child: Icon(
+                                                  Icons.add_outlined,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ))
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }),
+      );
     }
+
+    return widgetReturn;
   }
 
   @override
@@ -194,488 +240,235 @@ class _RestDetailState extends State<RestDetail>
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                 child: Column(
                   children: <Widget>[
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
+                    Container(
+                      decoration:
+                          BoxDecoration(color: Colors.white, boxShadow: [
+                        BoxShadow(
+                            color: Colors.black12,
+                            spreadRadius: 5.0,
+                            blurRadius: 10.0),
+                      ]),
+                      margin: EdgeInsets.all(2.0),
+                      child: Row(
                         children: [
-                          Text(
-                            widget.rest.name,
-                            style: TextStyle(
-                                fontSize: 25.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                          ),
-                          Text(widget.rest.address,
-                              style: TextStyle(
-                                  fontSize: 15.0, color: Colors.grey)),
-                          Text('Cuisines ' + widget.rest.cuisines,
-                              style: TextStyle(
-                                  fontSize: 15.0, color: Colors.grey)),
-                          Row(children: [
-                            Icon(Icons.timer, color: Colors.grey),
-                            Text(' 30 mins | ',
-                                style: TextStyle(
-                                    fontSize: 15.0, color: Colors.grey)),
-                            Icon(Icons.location_on, color: Colors.grey),
-                            Text(' 3.8 kms',
-                                style: TextStyle(
-                                    fontSize: 15.0, color: Colors.grey))
-                          ])
-                        ]),
-
-                    Row(
-                      children: [
-                        Card(
-                          child: Container(
-                            width: 200.0,
+                          ClipRRect(
+                              child: widget.rest.image.isEmpty
+                                  ? Image.asset('assets/dummyRestaurant.png',
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover)
+                                  : Image.network(widget.rest.image,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover)),
+                          Padding(
+                            padding: EdgeInsets.only(left: 5),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                              children: [
-                                Text(
-                                  'Rating',
-                                  style: TextStyle(color: Colors.black),
-                                )
-                              ],
-                            ),
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.rest.name,
+                                    style: TextStyle(
+                                        fontSize: 25.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                  ),
+                                  Text(widget.rest.address,
+                                      style: TextStyle(
+                                          fontSize: 12.0, color: Colors.grey)),
+                                  Text('Cuisines ' + widget.rest.cuisines,
+                                      style: TextStyle(
+                                          fontSize: 11.0, color: Colors.grey)),
+                                  Row(children: [
+                                    Icon(Icons.timer, color: Colors.grey),
+                                    Text(' 30 mins | ',
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: Colors.grey)),
+                                    Icon(Icons.location_on, color: Colors.grey),
+                                    Text(' 3.8 kms',
+                                        style: TextStyle(
+                                            fontSize: 15.0, color: Colors.grey))
+                                  ])
+                                ]),
+                          )
+                        ],
+                      ),
+                    ),
+                    IntrinsicHeight(
+                        child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                            child: Container(
+                          decoration:
+                              BoxDecoration(color: Colors.white, boxShadow: [
+                            BoxShadow(
+                                color: Colors.black12,
+                                spreadRadius: 2.0,
+                                blurRadius: 5.0),
+                          ]),
+                          margin: EdgeInsets.all(2.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/star.png',
+                                width: 50,
+                                height: 50,
+                              ),
+                              Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('MODE',
+                                      style: TextStyle(
+                                          fontSize: 12.0, color: Colors.black)),
+                                  Text('Delivery',
+                                      style: TextStyle(
+                                          fontSize: 11.0, color: Colors.grey))
+                                ],
+                              ))
+                            ],
                           ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          decoration:
+                              BoxDecoration(color: Colors.white, boxShadow: [
+                            BoxShadow(
+                                color: Colors.black12,
+                                spreadRadius: 2.0,
+                                blurRadius: 5.0),
+                          ]),
+                          margin: EdgeInsets.all(2.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/star.png',
+                                width: 50,
+                                height: 50,
+                              ),
+                              Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('RATINGS',
+                                      style: TextStyle(
+                                          fontSize: 12.0, color: Colors.black)),
+                                  Text('3.7',
+                                      style: TextStyle(
+                                          fontSize: 11.0, color: Colors.grey))
+                                ],
+                              ))
+                            ],
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          decoration:
+                              BoxDecoration(color: Colors.white, boxShadow: [
+                            BoxShadow(
+                                color: Colors.black12,
+                                spreadRadius: 2.0,
+                                blurRadius: 5.0),
+                          ]),
+                          margin: EdgeInsets.all(2.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/star.png',
+                                width: 50,
+                                height: 50,
+                              ),
+                              Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('COST FOR 2',
+                                      style: TextStyle(
+                                          fontSize: 12.0, color: Colors.black)),
+                                  Text('350',
+                                      style: TextStyle(
+                                          fontSize: 11.0, color: Colors.grey))
+                                ],
+                              ))
+                            ],
+                          ),
+                        ))
+                      ],
+                    )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            primary: Colors.white,
+                            side: BorderSide(color: Colors.red, width: 1),
+                          ),
+                          label: Text(
+                            'Call',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          icon: Icon(
+                            Icons.phone_outlined,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            print('Pressed');
+                          },
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            primary: Colors.white,
+                            side: BorderSide(color: Colors.red, width: 1),
+                          ),
+                          label: Text(
+                            'Directions',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          icon: Icon(Icons.pin_drop_outlined,
+                              color: Colors.red, size: 20),
+                          onPressed: () {
+                            print('Pressed');
+                          },
                         )
                       ],
                     ),
                     TabBar(
                       controller: _tabController,
-                      labelColor: Colors.green,
+                      labelColor: Colors.red,
                       isScrollable: true,
-                      indicatorColor: Colors.transparent,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      //indicator: BoxDecoration(color: Colors.red),
+                      indicatorColor: Colors.red,
                       unselectedLabelColor: Colors.grey,
                       unselectedLabelStyle: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         color: Colors.grey,
-                        fontWeight: FontWeight.w700,
+                        //fontWeight: FontWeight.w700,
                       ),
                       labelStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                        //fontWeight: FontWeight.w700,
                       ),
-                      tabs: <Widget>[
-                        Text('MAIN COURSE'),
-                        Text('BEVERAGES'),
-                        Text('SWEETS'),
-                        Text('DESSERTS')
-                      ],
+                      tabs: tabHeaders(),
                     ),
                     Expanded(
                       child: TabBarView(
-                        controller: _tabController,
-                        children: <Widget>[
-                          ListView.builder(
-                              itemCount: foodCategoryOne.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.all(2.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Colors.black12,
-                                              spreadRadius: 2.0,
-                                              blurRadius: 5.0),
-                                        ]),
-                                    margin: EdgeInsets.all(5.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(10.0),
-                                              bottomLeft:
-                                                  Radius.circular(10.0)),
-                                          child: _displayImage(base64Decode(
-                                              foodCategoryOne[index]
-                                                  .menu_image)),
-                                          //Image.memory(base64Decode(foodCategoryOne[index].menu_image),
-                                          //width: 100, height: 100, fit: BoxFit.cover),
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          foodCategoryOne[index]
-                                                              .sub_cat_name,
-                                                          style: TextStyle(
-                                                              fontSize: 15.0,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        Text(
-                                                          'COST: Rs ' +
-                                                              foodCategoryOne[
-                                                                      index]
-                                                                  .menu_full_price,
-                                                          style: TextStyle(
-                                                            fontSize: 10.0,
-                                                            color: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          right: 4.0),
-                                                      child: ElevatedButton(
-                                                        style: ButtonStyle(
-                                                            backgroundColor:
-                                                                MaterialStateProperty
-                                                                    .all<Color>(
-                                                                        Colors
-                                                                            .red)),
-                                                        onPressed: () => null,
-                                                        child: Text(
-                                                          'SEE MENU',
-                                                          style: TextStyle(
-                                                              fontSize: 12.0,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                          ListView.builder(
-                              itemCount: foodCategoryTwo.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.all(2.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Colors.black12,
-                                              spreadRadius: 2.0,
-                                              blurRadius: 5.0),
-                                        ]),
-                                    margin: EdgeInsets.all(5.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(10.0),
-                                              bottomLeft:
-                                                  Radius.circular(10.0)),
-                                          child: _displayImage(base64Decode(
-                                              foodCategoryTwo[index]
-                                                  .menu_image)),
-                                          //Image.memory(base64Decode(foodCategoryOne[index].menu_image),
-                                          //width: 100, height: 100, fit: BoxFit.cover),
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          foodCategoryTwo[index]
-                                                              .sub_cat_name,
-                                                          style: TextStyle(
-                                                              fontSize: 15.0,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        Text(
-                                                          'COST: Rs ' +
-                                                              foodCategoryTwo[
-                                                                      index]
-                                                                  .menu_full_price,
-                                                          style: TextStyle(
-                                                            fontSize: 10.0,
-                                                            color: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          right: 4.0),
-                                                      child: ElevatedButton(
-                                                        style: ButtonStyle(
-                                                            backgroundColor:
-                                                                MaterialStateProperty
-                                                                    .all<Color>(
-                                                                        Colors
-                                                                            .red)),
-                                                        onPressed: () => null,
-                                                        child: Text(
-                                                          'SEE MENU',
-                                                          style: TextStyle(
-                                                              fontSize: 12.0,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                          ListView.builder(
-                              itemCount: foodCategoryThree.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.all(2.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Colors.black12,
-                                              spreadRadius: 2.0,
-                                              blurRadius: 5.0),
-                                        ]),
-                                    margin: EdgeInsets.all(5.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(10.0),
-                                              bottomLeft:
-                                                  Radius.circular(10.0)),
-                                          child: _displayImage(base64Decode(
-                                              foodCategoryThree[index]
-                                                  .menu_image)),
-                                          //Image.memory(base64Decode(foodCategoryOne[index].menu_image),
-                                          //width: 100, height: 100, fit: BoxFit.cover),
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          foodCategoryThree[
-                                                                  index]
-                                                              .sub_cat_name,
-                                                          style: TextStyle(
-                                                              fontSize: 15.0,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        Text(
-                                                          'COST: Rs ' +
-                                                              foodCategoryThree[
-                                                                      index]
-                                                                  .menu_full_price,
-                                                          style: TextStyle(
-                                                            fontSize: 10.0,
-                                                            color: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          right: 4.0),
-                                                      child: ElevatedButton(
-                                                        style: ButtonStyle(
-                                                            backgroundColor:
-                                                                MaterialStateProperty
-                                                                    .all<Color>(
-                                                                        Colors
-                                                                            .red)),
-                                                        onPressed: () => null,
-                                                        child: Text(
-                                                          'SEE MENU',
-                                                          style: TextStyle(
-                                                              fontSize: 12.0,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                          ListView.builder(
-                              itemCount: foodCategoryFour.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.all(2.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Colors.black12,
-                                              spreadRadius: 2.0,
-                                              blurRadius: 5.0),
-                                        ]),
-                                    margin: EdgeInsets.all(5.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(10.0),
-                                              bottomLeft:
-                                                  Radius.circular(10.0)),
-                                          child: _displayImage(base64Decode(
-                                              foodCategoryThree[index]
-                                                  .menu_image)),
-                                          //Image.memory(base64Decode(foodCategoryOne[index].menu_image),
-                                          //width: 100, height: 100, fit: BoxFit.cover),
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          foodCategoryFour[
-                                                                  index]
-                                                              .sub_cat_name,
-                                                          style: TextStyle(
-                                                              fontSize: 15.0,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        Text(
-                                                          'COST: Rs ' +
-                                                              foodCategoryFour[
-                                                                      index]
-                                                                  .menu_full_price,
-                                                          style: TextStyle(
-                                                            fontSize: 10.0,
-                                                            color: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          right: 4.0),
-                                                      child: ElevatedButton(
-                                                        style: ButtonStyle(
-                                                            backgroundColor:
-                                                                MaterialStateProperty
-                                                                    .all<Color>(
-                                                                        Colors
-                                                                            .red)),
-                                                        onPressed: () => null,
-                                                        child: Text(
-                                                          'SEE MENU',
-                                                          style: TextStyle(
-                                                              fontSize: 12.0,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                        ],
-                      ),
+                          controller: _tabController, children: tabDataEach()
+                          /* [Column(children: tabDataList(),),Container(),Container(),Container(),] */
+                          ),
                     ),
                     //Text('demo'),
                   ],
@@ -697,23 +490,23 @@ class MenuJsonParser {
   String menu_name;
   String menu_full_price;
   String menu_image;
+  int quantity;
 
   MenuJsonParser(this.sub_cat_name, this.sub_cat_id, this.menu_name,
-      this.menu_full_price, this.menu_image);
+      this.menu_full_price, this.menu_image, this.quantity);
 
   factory MenuJsonParser.fromJson(dynamic json) {
-    print(json['foodItem'].isEmpty);
-
     if (!json['foodItem'].isEmpty) {
       return MenuJsonParser(
           json['sub_cat_name'] as String,
           json['sub_cat_id'] as String,
           json['foodItem'][0]['menu_name'] as String,
           json['foodItem'][0]['menu_full_price'] as String,
-          json['foodItem'][0]['menu_image'] as String);
+          json['foodItem'][0]['menu_image'] as String,
+          0);
     } else {
       return MenuJsonParser(json['sub_cat_name'] as String,
-          json['sub_cat_id'] as String, '', '', '');
+          json['sub_cat_id'] as String, '', '', '', 0);
     }
   }
 }
