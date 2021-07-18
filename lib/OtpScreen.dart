@@ -26,8 +26,7 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void _otpenter(String otp) async {
-
-    if(!(otp=='')) {
+    if (!(otp == '')) {
       //get device id for android device
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -85,18 +84,16 @@ class _NotesPageState extends State<NotesPage> {
         //Write exception statement here
 
       }
+    } else {
+      Fluttertoast.showToast(
+          msg: 'Enter OTP',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
-    else
-      {
-        Fluttertoast.showToast(
-            msg: 'Enter OTP',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-      }
   }
 
   Widget _buildOTP() {
@@ -124,106 +121,183 @@ class _NotesPageState extends State<NotesPage> {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => HomePage()));
   }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(19, 22, 40, 1),
-        title: Text("Smart Dine"),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 60.0),
-              child: Text(
-                'Enter Verification Code',
-                style: TextStyle(
-                  color: Colors.orange,
-                  fontFamily: 'Courgette',
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+          appBar: null,
+          resizeToAvoidBottomInset : false,
+          body: Center(
 
-            Image(
-              image: AssetImage(
-                'assets/smartdine.jpeg',
-              ),
-              height: 150,
-              width: 150,
-            ),
-
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Text(
-                'Enter OTP',
-                style: TextStyle(
-                  color: Colors.orange,
-                  fontFamily: 'Courgette',
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30.0),
-              child: Text(
-                'We have sent you OTP on your mobile number',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: 'Courgette',
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Center(
-              child: Container(
-                color: Colors.orange,
-                width: 250.0,
-                height: 200.0,
-                padding: const EdgeInsets.only(top: 70.0),
-                child: PinPut(
-                  fieldsCount: 4,
-                  eachFieldWidth: 50,
-                  eachFieldHeight: 50,
-                  focusNode: _pinPutFocusNode,
-                  controller: _pinPutController,
-                  submittedFieldDecoration: _pinPutDecoration.copyWith(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  selectedFieldDecoration: _pinPutDecoration,
-                  followingFieldDecoration: _pinPutDecoration.copyWith(
-                    borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all(
-                      color: Colors.deepPurpleAccent.withOpacity(.5),
+            child: Stack(
+              fit: StackFit.expand,
+              overflow: Overflow.visible,
+              children: <Widget>[
+                // Max Size Widget
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'Enter verification code',
+                          style: TextStyle(
+                              color: Colors.orange,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(
-                  left: 15.0, right: 15.0, top: 25, bottom: 0),
-              height: 50,
-              width: 250,
-              decoration: BoxDecoration(
-                  color: Colors.cyan, borderRadius: BorderRadius.circular(20)),
-              child: FlatButton(
-                onPressed: () => _otpenter(_pinPutController.text),
-                child: Text(
-                  'VERIFY',
-                  style: TextStyle(color: Colors.orange, fontSize: 25),
+
+                Positioned(
+                  top: 210,
+                  right: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          'Enter OTP',
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  top: 210,
+                  right: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          'We have sent OTP on your mobile number',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(50.0),
+                      child: Container(
+                        height: 170,
+                        width: 170,
+                        child: Image.asset('assets/logo.jpg'),
+                      ),
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  top: MediaQuery.of(context).size.height / 2,
+                  right: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.orange,
+
+                  ),
+                ),
+
+
+
+
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0,0.0,0.0,50.0),
+                  child: Align(
+                    alignment: Alignment.center,
+
+                      child: Container(
+                        height: 50,
+                        width: 150,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: FlatButton(
+                          onPressed: () => _otpenter(_pinPutController.text),
+                          child: Text(
+                            'VERIFY',
+                            style: TextStyle(
+                                color: Colors.orange,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                ),
+
+
+
+
+
+
+
+                   Positioned(
+                    top: 450,
+                    right: 70,
+
+
+                    child: Container(
+                      //margin: const EdgeInsets.fromLTRB(0.0, 150.0, 0.0, 0.0),
+                      color: Colors.white,
+                      width: 250.0,
+                      height: 200.0,
+                      padding: const EdgeInsets.only(top: 80.0),
+                      child: PinPut(
+                        fieldsCount: 4,
+                        eachFieldWidth: 50,
+                        eachFieldHeight: 50,
+                        focusNode: _pinPutFocusNode,
+                        controller: _pinPutController,
+                        submittedFieldDecoration: _pinPutDecoration.copyWith(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        selectedFieldDecoration: _pinPutDecoration,
+                        followingFieldDecoration: _pinPutDecoration.copyWith(
+                          borderRadius: BorderRadius.circular(20.0),
+                          border: Border.all(
+                            color: Colors.deepPurpleAccent.withOpacity(.5),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+              ],
             ),
-          ],
-        ),
+          )
       ),
     );
   }
-}
+
+  }
+

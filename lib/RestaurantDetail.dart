@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'HomeScreen.dart';
 import 'dart:convert';
@@ -13,7 +14,10 @@ class RestDetail extends StatefulWidget {
 
 class _RestDetailState extends State<RestDetail>
     with SingleTickerProviderStateMixin {
+
+  
   TabController? _tabController;
+  List<MenuJsonParser> cart =[];
   List<MenuJsonParser> foodCategoryOne = [];
   List<MenuJsonParser> foodCategoryTwo = [];
   List<MenuJsonParser> foodCategoryThree = [];
@@ -21,11 +25,15 @@ class _RestDetailState extends State<RestDetail>
   List completeList = [];
   bool _loading = true;
   List<String> categoryList = [];
+  int counter=0;
+
+
 
   @override
   void initState() {
     // initialise your tab controller here
-    categoryList = ['Main Course', 'Beverages', 'Sweets', 'Desserts'];
+
+    categoryList = ['Main Course', 'Beverages'];
     callAPIinLoop();
     _tabController = TabController(length: categoryList.length, vsync: this);
     super.initState();
@@ -80,14 +88,16 @@ class _RestDetailState extends State<RestDetail>
     }
   }
 
-  void addToCart(MenuJsonParser menuItem){
-        setState(() {
-        menuItem.quantity++;
+  void addToCart(MenuJsonParser menuItem) {
+    setState(() {
+      menuItem.quantity++;
+      cart.add(menuItem);
+      counter=counter+1;
     });
   }
 
-  void removeFromCart(MenuJsonParser menuItem){
-    if(menuItem.quantity != 0){
+  void removeFromCart(MenuJsonParser menuItem) {
+    if (menuItem.quantity != 0) {
       setState(() {
         menuItem.quantity--;
       });
@@ -172,7 +182,8 @@ class _RestDetailState extends State<RestDetail>
                                     child: Row(
                                       children: [
                                         InkWell(
-                                            onTap: () => removeFromCart(completeList[cat][index]), 
+                                            onTap: () => removeFromCart(
+                                                completeList[cat][index]),
                                             child: Container(
                                               child: Padding(
                                                 padding: EdgeInsets.only(
@@ -196,7 +207,8 @@ class _RestDetailState extends State<RestDetail>
                                                   color: Colors.white),
                                             ))),
                                         InkWell(
-                                            onTap: () => addToCart(completeList[cat][index]),
+                                            onTap: () => addToCart(
+                                                completeList[cat][index]),
                                             child: Container(
                                               child: Padding(
                                                 padding: EdgeInsets.only(
@@ -263,35 +275,42 @@ class _RestDetailState extends State<RestDetail>
                                       fit: BoxFit.cover)),
                           Padding(
                             padding: EdgeInsets.only(left: 5),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.rest.name,
-                                    style: TextStyle(
-                                        fontSize: 25.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black),
-                                  ),
-                                  Text(widget.rest.address,
+                            child: SizedBox(
+                              width: 250, // set this
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.rest.name,
                                       style: TextStyle(
-                                          fontSize: 12.0, color: Colors.grey)),
-                                  Text('Cuisines ' + widget.rest.cuisines,
-                                      style: TextStyle(
-                                          fontSize: 11.0, color: Colors.grey)),
-                                  Row(children: [
-                                    Icon(Icons.timer, color: Colors.grey),
-                                    Text(' 30 mins | ',
+                                          fontSize: 25.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black),
+                                    ),
+                                    Text(widget.rest.address,
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 12.0,
                                             color: Colors.grey)),
-                                    Icon(Icons.location_on, color: Colors.grey),
-                                    Text(' 3.8 kms',
+                                    Text('Cuisines ' + widget.rest.cuisines,
                                         style: TextStyle(
-                                            fontSize: 15.0, color: Colors.grey))
-                                  ])
-                                ]),
+                                            fontSize: 11.0,
+                                            color: Colors.grey)),
+                                    Row(children: [
+                                      Icon(Icons.timer, color: Colors.grey),
+                                      Text(' 30 mins | ',
+                                          style: TextStyle(
+                                              fontSize: 15.0,
+                                              color: Colors.grey)),
+                                      Icon(Icons.location_on,
+                                          color: Colors.grey),
+                                      Text(' 3.8 kms',
+                                          style: TextStyle(
+                                              fontSize: 15.0,
+                                              color: Colors.grey))
+                                    ])
+                                  ]),
+                            ),
                           )
                         ],
                       ),
@@ -300,40 +319,6 @@ class _RestDetailState extends State<RestDetail>
                         child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Expanded(
-                            child: Container(
-                          decoration:
-                              BoxDecoration(color: Colors.white, boxShadow: [
-                            BoxShadow(
-                                color: Colors.black12,
-                                spreadRadius: 2.0,
-                                blurRadius: 5.0),
-                          ]),
-                          margin: EdgeInsets.all(2.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Image.asset(
-                                'assets/star.png',
-                                width: 50,
-                                height: 50,
-                              ),
-                              Center(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('MODE',
-                                      style: TextStyle(
-                                          fontSize: 12.0, color: Colors.black)),
-                                  Text('Delivery',
-                                      style: TextStyle(
-                                          fontSize: 11.0, color: Colors.grey))
-                                ],
-                              ))
-                            ],
-                          ),
-                        )),
                         Expanded(
                             child: Container(
                           decoration:
@@ -382,7 +367,7 @@ class _RestDetailState extends State<RestDetail>
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               Image.asset(
-                                'assets/star.png',
+                                'assets/card.PNG',
                                 width: 50,
                                 height: 50,
                               ),
@@ -470,7 +455,35 @@ class _RestDetailState extends State<RestDetail>
                           /* [Column(children: tabDataList(),),Container(),Container(),Container(),] */
                           ),
                     ),
-                    //Text('demo'),
+
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      color: Colors.red,
+
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+
+                               Text(counter.toString(),style: TextStyle(color: Colors.white)),
+
+
+                        InkWell(
+                          child: Text('VIEW CART', style: TextStyle(color: Colors.white)),
+                          onTap: () {
+
+
+
+                          }
+                        )
+
+
+                          ],
+                        ),
+                      ),
+                    )
                   ],
                 ),
               )
@@ -483,6 +496,9 @@ class _RestDetailState extends State<RestDetail>
     );
   }
 }
+
+
+
 
 class MenuJsonParser {
   String sub_cat_name;
@@ -511,6 +527,3 @@ class MenuJsonParser {
   }
 }
 
-Widget _buildLoginBtn() {
-  return Container();
-}

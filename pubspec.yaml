@@ -57,9 +57,23 @@ flutter:
 
 
   assets:
-    - assets/
+    - assets/back1.png
+    - assets/back2.png
+    - assets/back3.png
+    - assets/logo.jpg
+    - assets/slider_i1.png
+    - assets/slider_i2.jpg
+    - assets/slider_i3.jpg
+    - assets/slider_i5.png
+    - assets/slider_i6.jpg
+    - assets/slider_i7.jpg
+    - assets/slider_i8.jpg
+    - assets/card.PNG
+    - assets/star.png
+    - assets/dummyRestaurant.png
     # To add assets to your application, add an assets section, like this:
   # assets:
+
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

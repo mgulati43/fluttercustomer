@@ -54,7 +54,7 @@ class _SideBarState extends State<SideBar> {
 
   Widget menuItem(int id, String title, IconData icon) {
     return Material(
-      color: Colors.transparent,
+      color: Colors.white,
       child: InkWell(
         onTap: () {
           setState(() {
@@ -64,32 +64,32 @@ class _SideBarState extends State<SideBar> {
                 MaterialPageRoute(builder: (context) => NotesPage()),
               );
             }
-            // } else if (id == 2) {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => OrdersPage()),
-            //   );
-            // } else if (id == 3) {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => CalendarPage()),
-            //   );
-            // } else if (id == 4) {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => NotesPage()),
-            //   );
-            // } else if (id == 5) {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => SettingsPage()),
-            //   );
-            // } else if (id == 6) {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => LoginScreen()),
-            //   );
-            // }
+             else if (id == 2) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotesPage()),
+              );
+            } else if (id == 3) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotesPage()),
+              );
+            } else if (id == 4) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotesPage()),
+              );
+            } else if (id == 5) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotesPage()),
+              );
+            } else if (id == 6) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotesPage()),
+              );
+            }
           });
         },
         child: Padding(

@@ -26,6 +26,11 @@ getStringValuesSF() async {
   return stringValue;
 }
 
+// create order class having fields like amount,item name, quantity,restaurant name,gst
+//create an orders instance than  on click call a function which adds order details to a list of clicked item
+//make list global
+//remove item on item clicked from list
+//on click of item list pass the menu current clicked object to addtocart function which first creates an instance and then adds it to a global list
 class LoginDemo extends StatefulWidget {
   @override
   _LoginDemoState createState() => _LoginDemoState();
@@ -50,6 +55,7 @@ class _LoginDemoState extends State<LoginDemo> {
 
   void _otpenter() async {
     //get device id for android device
+    print('hii'+_phoneController.text);
     if (_phoneController.text == '') {
       Fluttertoast.showToast(
           msg: 'Enter Mobile Number',
@@ -134,92 +140,179 @@ class _LoginDemoState extends State<LoginDemo> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(19, 22, 40, 1),
-        title: Text("Smart Dine"),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 60.0),
-              child: Text(
-                'SIGN IN',
-                style: TextStyle(
-                  color: Colors.orange,
-                  fontFamily: 'Courgette',
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold,
+    Widget build(BuildContext context) {
+      return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+          appBar: null,
+          resizeToAvoidBottomInset : false,
+          body: Center(
+
+            child: Stack(
+              fit: StackFit.expand,
+              overflow: Overflow.visible,
+              children: <Widget>[
+                // Max Size Widget
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'SIGN IN',
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Image(
-              image: AssetImage('assets/smartdine.jpeg'),
-              height: 150,
-              width: 150,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30.0),
-              child: Text(
-                'ENTER YOUR MOBILE NUMBER',
-                style: TextStyle(
-                  color: Colors.orange,
-                  fontFamily: 'Courgette',
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+
+                Positioned(
+                  top: 210,
+                  right: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          'Enter your mobile number',
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30.0),
-              child: Text(
-                'We will send you a OTP message',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: 'Courgette',
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.bold,
+
+                Positioned(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(50.0),
+                      child: Container(
+                        height: 170,
+                        width: 170,
+                        child: Image.asset('assets/logo.jpg'),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 15.0, right: 15.0, top: 15, bottom: 0),
-              child: TextField(
-                controller: _phoneController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    labelText: 'Enter Mobile Number',
-                    hintText: 'Enter Mobile Number'),
-              ),
-            ),
-            FlatButton(
-              child: Text(
-                '',
-                style: TextStyle(color: Colors.blue, fontSize: 15),
-              ),
-              onPressed: () => _otpenter(),
-            ),
-            Container(
-              height: 50,
-              width: 250,
-              decoration: BoxDecoration(
-                  color: Colors.cyan, borderRadius: BorderRadius.circular(20)),
-              child: FlatButton(
-                onPressed: () => _otpenter(),
-                child: Text(
-                  'SEND OTP',
-                  style: TextStyle(color: Colors.orange, fontSize: 25),
+
+                Positioned(
+                  top: MediaQuery.of(context).size.height / 2,
+                  right: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width,
+                    color: getColorFromHex('#f54c31'),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
+                      child: TextField(
+                          controller: _phoneController,
+                          keyboardType: TextInputType.number,
+                          maxLength: 10,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            hintText: "Enter a Mobile Number",
+                            hintStyle:
+                            TextStyle(fontSize: 20.0, color: Colors.white),
+                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 20)),
+                    ),
+                  ),
                 ),
-              ),
+
+                Positioned(
+                  top: MediaQuery.of(context).size.height / 2 + 90.0,
+                  right: MediaQuery.of(context).size.width / 3,
+                  child: Container(
+                    height: 50,
+                    width: 150,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: FlatButton(
+                      onPressed: () =>_otpenter(),
+                      child: Text(
+                        'SEND OTP',
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      height: 120,
+                      width: 120,
+                      child: Image.asset('assets/back1.png'),
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 120,
+                      width: 120,
+                      child: Image.asset('assets/back2.png'),
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      height: 120,
+                      width: 120,
+                      child: Image.asset('assets/back3.png'),
+                    ),
+                  ),
+                ),
+
+                // Container(
+                //   height: 3,
+                //   width: 70,
+                //   color: Colors.red,
+                //   child: Text('heya',style: TextStyle(color: Colors.black,fontSize: 20)),
+                //
+                // )
+                //Text('heya',style: TextStyle(color: Colors.black,fontSize: 20))
+              ],
             ),
-          ],
-        ),
-      ),
+          )),
     );
+  }
+
+  Color getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
+
+    if (hexColor.length == 6) {
+      hexColor = 'FF' + hexColor;
+    }
+
+    return Color(int.parse(hexColor, radix: 16));
   }
 }

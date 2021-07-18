@@ -167,8 +167,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       drawer: SideBar(),
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(19, 22, 40, 1),
+        backgroundColor: Colors.white,
         title: Text("Smart Dine"),
+        iconTheme: IconThemeData(color: Colors.orange),
       ),
 
       body: Column(children: [
