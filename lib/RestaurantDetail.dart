@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'HomeScreen.dart';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class RestDetail extends StatefulWidget {
   _RestDetailState createState() => _RestDetailState();
@@ -14,10 +15,9 @@ class RestDetail extends StatefulWidget {
 
 class _RestDetailState extends State<RestDetail>
     with SingleTickerProviderStateMixin {
-
-  
   TabController? _tabController;
-  List<MenuJsonParser> cart =[];
+  final PanelController _pc = new PanelController();
+  List<MenuJsonParser> cart = [];
   List<MenuJsonParser> foodCategoryOne = [];
   List<MenuJsonParser> foodCategoryTwo = [];
   List<MenuJsonParser> foodCategoryThree = [];
@@ -25,9 +25,7 @@ class _RestDetailState extends State<RestDetail>
   List completeList = [];
   bool _loading = true;
   List<String> categoryList = [];
-  int counter=0;
-
-
+  int counter = 0;
 
   @override
   void initState() {
@@ -92,7 +90,7 @@ class _RestDetailState extends State<RestDetail>
     setState(() {
       menuItem.quantity++;
       cart.add(menuItem);
-      counter=counter+1;
+      counter = counter + 1;
     });
   }
 
@@ -455,35 +453,28 @@ class _RestDetailState extends State<RestDetail>
                           /* [Column(children: tabDataList(),),Container(),Container(),Container(),] */
                           ),
                     ),
-
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      color: Colors.red,
-
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-
-                               Text(counter.toString(),style: TextStyle(color: Colors.white)),
-
-
-                        InkWell(
+                    SlidingUpPanel(
+                      panel: Column(
+                        children: [
+                          //Make CART UI here
+                          Container(
+                            child: Text('This is column text'),
+                          ),
+                          InkWell(
                           child: Text('VIEW CART', style: TextStyle(color: Colors.white)),
                           onTap: () {
-
-
-
+                            _pc.open();
                           }
                         )
-
-
-                          ],
-                        ),
+                        ],
                       ),
-                    )
+                      minHeight: 50,
+                      maxHeight: 300,
+                      backdropColor: Colors.red,
+                      color: Colors.red,
+                      backdropOpacity: 0.5,
+                      controller: _pc,
+                    ),
                   ],
                 ),
               )
@@ -496,9 +487,6 @@ class _RestDetailState extends State<RestDetail>
     );
   }
 }
-
-
-
 
 class MenuJsonParser {
   String sub_cat_name;
@@ -526,4 +514,3 @@ class MenuJsonParser {
     }
   }
 }
-
