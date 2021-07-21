@@ -50,7 +50,6 @@ class _HomePageState extends State<HomePage> {
 
   void _navigateDetailPage(
       BuildContext context, RestaurantJsonParser restaurant) {
-
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => RestDetail(rest: restaurant)));
   }
@@ -74,10 +73,10 @@ class _HomePageState extends State<HomePage> {
       decodedResponse = utf8.decode(response.bodyBytes);
 
       var jsonObjects = jsonDecode(decodedResponse)['spots'] as List;
-      print('mayank'+jsonObjects.toString());
+      print('mayank' + jsonObjects.toString());
       Map<String, dynamic> mapOtpResponse = jsonDecode(decodedResponse);
       //fetch message Response status ie invalid otp or valid otp
-     // String messageResponse = mapOtpResponse['spots']['admin_id'];
+      // String messageResponse = mapOtpResponse['spots']['admin_id'];
 
       setState(() {
         //fetched restaurant list
@@ -93,7 +92,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _searchBar() {
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       //Textfield with icon of search in starting
@@ -116,11 +114,11 @@ class _HomePageState extends State<HomePage> {
         controller: editingController,
         //labeltext,hinttext and border
         decoration: InputDecoration(
-            labelText: "Search",
+            labelText: "Search by restaurant name",
             hintText: "Search by restaurant name",
             prefixIcon: Icon(Icons.search),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                borderRadius: BorderRadius.all(Radius.circular(0.0)))),
       ),
     );
   }
@@ -141,7 +139,7 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    borderRadius: BorderRadius.all(Radius.circular(0.0)),
                     boxShadow: [
                       BoxShadow(
                           color: Colors.black38,
@@ -151,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                     ]),
               ),
               ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderRadius: BorderRadius.all(Radius.circular(0.0)),
                 child: Image.asset(
                   bannerImage[x],
                   fit: BoxFit.cover,
@@ -171,7 +169,6 @@ class _HomePageState extends State<HomePage> {
         title: Text("Smart Dine"),
         iconTheme: IconThemeData(color: Colors.orange),
       ),
-
       body: Column(children: [
         _searchBar(),
         Container(
@@ -212,99 +209,117 @@ class _HomePageState extends State<HomePage> {
                               searchableRestaurantList[index].image,
                             )),
                         Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(children: [
-                                    Text(
-                                      searchableRestaurantList[index].name,
-                                      style: TextStyle(
-                                          fontSize: 15.0,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    // Text(
-                                    //   searchableRestaurantList[index].name,
-                                    //   style: TextStyle(
-                                    //       fontSize: 20.0,
-                                    //       color: Colors.black,),
-                                    // ),
-                                    ],),
-
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 2.0),
-                                  child: Text(
-                                    searchableRestaurantList[index].address,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      color: Colors.black54,
-                                    ),
-                                    maxLines: 1,
+                            child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        searchableRestaurantList[index].name,
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      // Text(
+                                      //   searchableRestaurantList[index].name,
+                                      //   style: TextStyle(
+                                      //       fontSize: 20.0,
+                                      //       color: Colors.black,),
+                                      // ),
+                                    ],
                                   ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 2.0),
+                                child: Text(
+                                  searchableRestaurantList[index].address,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    color: Colors.black54,
+                                  ),
+                                  maxLines: 1,
                                 ),
-                                Text(
-                                    searchableRestaurantList[index]
-                                            .openingTime +
-                                        ' - ' +
-                                        searchableRestaurantList[index]
-                                            .closingTime,
-                                    style: TextStyle(
-                                        fontSize: 15.0, color: Colors.black54)),
-
-
-
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-
-                                    Container(
-
-                                    width: 170,
-                                      child: Text('Cuisines '+searchableRestaurantList[index].cuisines,
+                              ),
+                              Text(
+                                  searchableRestaurantList[index].openingTime +
+                                      ' - ' +
+                                      searchableRestaurantList[index]
+                                          .closingTime,
+                                  style: TextStyle(
+                                      fontSize: 10.0, color: Colors.black54)),
+                              Row(
+                                // mainAxisAlignment:
+                                //     MainAxisAlignment.spaceBetween,
+                                children: [],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Container(
+                                      width: 170,
+                                      child: Text(
+                                          'Cuisines ' +
+                                              searchableRestaurantList[index]
+                                                  .cuisines,
+                                          textAlign: TextAlign.left,
                                           style: TextStyle(
-                                              fontSize: 15.0, color: Colors.black54)),
+                                              fontSize: 10.0,
+                                              color: Colors.black54)),
                                     ),
-                                    Padding(
-                                      padding: EdgeInsets.only(right: 4.0),
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                            MaterialStateProperty.all<Color>(Colors.red)),
-                                        onPressed: () => _navigateDetailPage(
-                                            context,
-                                            searchableRestaurantList[index]),
-                                        child: Text(
-                                          'SEE MENU',
-
-                                          style: TextStyle(
-                                              fontSize: 12.0,
-
-                                              color: Colors.white),
-                                        ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 4.0),
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.red)),
+                                      onPressed: () => _navigateDetailPage(
+                                          context,
+                                          searchableRestaurantList[index]),
+                                      child: Text(
+                                        'SEE MENU',
+                                        style: TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.white),
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        )
+                        )),
+
                       ],
+
                     ),
+
                   ),
+
+
+
                 );
+
               }),
-        )
-      ]),
+        ),
+
+      ]
+
+      ),
+
+
     );
   }
 }

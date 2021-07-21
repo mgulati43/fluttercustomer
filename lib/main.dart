@@ -163,7 +163,7 @@ class _LoginDemoState extends State<LoginDemo> {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(40.0),
                         child: Text(
                           'SIGN IN',
                           style: TextStyle(
@@ -186,7 +186,7 @@ class _LoginDemoState extends State<LoginDemo> {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(30),
                         child: Text(
                           'Enter your mobile number',
                           style: TextStyle(
@@ -203,7 +203,7 @@ class _LoginDemoState extends State<LoginDemo> {
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding: const EdgeInsets.all(50.0),
+                      padding: const EdgeInsets.all(70.0),
                       child: Container(
                         height: 170,
                         width: 170,
@@ -230,9 +230,9 @@ class _LoginDemoState extends State<LoginDemo> {
                             fillColor: Colors.white,
                             hintText: "Enter a Mobile Number",
                             hintStyle:
-                            TextStyle(fontSize: 20.0, color: Colors.white),
+                            TextStyle(fontSize: 15.0, color: Colors.white),
                           ),
-                          style: TextStyle(color: Colors.white, fontSize: 20)),
+                          style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ),

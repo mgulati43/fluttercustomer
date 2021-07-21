@@ -150,7 +150,7 @@ class _RestDetailState extends State<RestDetail>
                             children: <Widget>[
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
                                     children: [
@@ -198,12 +198,12 @@ class _RestDetailState extends State<RestDetail>
                                             color: Colors.red,
                                             child: Center(
                                                 child: Text(
-                                              completeList[cat][index]
-                                                  .quantity
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ))),
+                                                  completeList[cat][index]
+                                                      .quantity
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ))),
                                         InkWell(
                                             onTap: () => addToCart(
                                                 completeList[cat][index]),
@@ -247,241 +247,341 @@ class _RestDetailState extends State<RestDetail>
         ),
         body: _loading == false
             ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      decoration:
-                          BoxDecoration(color: Colors.white, boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12,
-                            spreadRadius: 5.0,
-                            blurRadius: 10.0),
-                      ]),
-                      margin: EdgeInsets.all(2.0),
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                              child: widget.rest.image.isEmpty
-                                  ? Image.asset('assets/dummyRestaurant.png',
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover)
-                                  : Image.network(widget.rest.image,
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover)),
-                          Padding(
-                            padding: EdgeInsets.only(left: 5),
-                            child: SizedBox(
-                              width: 250, // set this
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      widget.rest.name,
-                                      style: TextStyle(
-                                          fontSize: 25.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black),
-                                    ),
-                                    Text(widget.rest.address,
-                                        style: TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.grey)),
-                                    Text('Cuisines ' + widget.rest.cuisines,
-                                        style: TextStyle(
-                                            fontSize: 11.0,
-                                            color: Colors.grey)),
-                                    Row(children: [
-                                      Icon(Icons.timer, color: Colors.grey),
-                                      Text(' 30 mins | ',
-                                          style: TextStyle(
-                                              fontSize: 15.0,
-                                              color: Colors.grey)),
-                                      Icon(Icons.location_on,
-                                          color: Colors.grey),
-                                      Text(' 3.8 kms',
-                                          style: TextStyle(
-                                              fontSize: 15.0,
-                                              color: Colors.grey))
-                                    ])
-                                  ]),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          child: Column(
+            children: <Widget>[
+              Container(
+                decoration:
+                BoxDecoration(color: Colors.white, boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12,
+                      spreadRadius: 5.0,
+                      blurRadius: 10.0),
+                ]),
+                margin: EdgeInsets.all(2.0),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                        child: widget.rest.image.isEmpty
+                            ? Image.asset('assets/dummyRestaurant.png',
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover)
+                            : Image.network(widget.rest.image,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover)),
+                    Padding(
+                      padding: EdgeInsets.only(left: 5),
+                      child: SizedBox(
+                        width: 250, // set this
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.rest.name,
+                                style: TextStyle(
+                                    fontSize: 25.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                              Text(widget.rest.address,
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.grey)),
+                              Text('Cuisines ' + widget.rest.cuisines,
+                                  style: TextStyle(
+                                      fontSize: 11.0,
+                                      color: Colors.grey)),
+                              Row(children: [
+                                Icon(Icons.timer, color: Colors.grey),
+                                Text(' 30 mins | ',
+                                    style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: Colors.grey)),
+                                Icon(Icons.location_on,
+                                    color: Colors.grey),
+                                Text(' 3.8 kms',
+                                    style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: Colors.grey))
+                              ])
+                            ]),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                          child: Container(
+                            decoration:
+                            BoxDecoration(color: Colors.white, boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black12,
+                                  spreadRadius: 2.0,
+                                  blurRadius: 5.0),
+                            ]),
+                            margin: EdgeInsets.all(2.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                Image.asset(
+                                  'assets/star.png',
+                                  width: 50,
+                                  height: 50,
+                                ),
+                                Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('RATINGS',
+                                            style: TextStyle(
+                                                fontSize: 12.0, color: Colors.black)),
+                                        Text('3.7',
+                                            style: TextStyle(
+                                                fontSize: 11.0, color: Colors.grey))
+                                      ],
+                                    ))
+                              ],
                             ),
-                          )
-                        ],
-                      ),
+                          )),
+                      Expanded(
+                          child: Container(
+                            decoration:
+                            BoxDecoration(color: Colors.white, boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black12,
+                                  spreadRadius: 2.0,
+                                  blurRadius: 5.0),
+                            ]),
+                            margin: EdgeInsets.all(2.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                Image.asset(
+                                  'assets/card.PNG',
+                                  width: 50,
+                                  height: 50,
+                                ),
+                                Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('COST FOR 2',
+                                            style: TextStyle(
+                                                fontSize: 12.0, color: Colors.black)),
+                                        Text('350',
+                                            style: TextStyle(
+                                                fontSize: 11.0, color: Colors.grey))
+                                      ],
+                                    ))
+                              ],
+                            ),
+                          ))
+                    ],
+                  )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      primary: Colors.white,
+                      side: BorderSide(color: Colors.red, width: 1),
                     ),
-                    IntrinsicHeight(
-                        child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                            child: Container(
-                          decoration:
-                              BoxDecoration(color: Colors.white, boxShadow: [
-                            BoxShadow(
-                                color: Colors.black12,
-                                spreadRadius: 2.0,
-                                blurRadius: 5.0),
-                          ]),
-                          margin: EdgeInsets.all(2.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Image.asset(
-                                'assets/star.png',
-                                width: 50,
-                                height: 50,
-                              ),
-                              Center(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('RATINGS',
-                                      style: TextStyle(
-                                          fontSize: 12.0, color: Colors.black)),
-                                  Text('3.7',
-                                      style: TextStyle(
-                                          fontSize: 11.0, color: Colors.grey))
-                                ],
-                              ))
-                            ],
-                          ),
-                        )),
-                        Expanded(
-                            child: Container(
-                          decoration:
-                              BoxDecoration(color: Colors.white, boxShadow: [
-                            BoxShadow(
-                                color: Colors.black12,
-                                spreadRadius: 2.0,
-                                blurRadius: 5.0),
-                          ]),
-                          margin: EdgeInsets.all(2.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Image.asset(
-                                'assets/card.PNG',
-                                width: 50,
-                                height: 50,
-                              ),
-                              Center(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('COST FOR 2',
-                                      style: TextStyle(
-                                          fontSize: 12.0, color: Colors.black)),
-                                  Text('350',
-                                      style: TextStyle(
-                                          fontSize: 11.0, color: Colors.grey))
-                                ],
-                              ))
-                            ],
-                          ),
-                        ))
-                      ],
-                    )),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            primary: Colors.white,
-                            side: BorderSide(color: Colors.red, width: 1),
-                          ),
-                          label: Text(
-                            'Call',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          icon: Icon(
-                            Icons.phone_outlined,
-                            color: Colors.red,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            print('Pressed');
-                          },
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            primary: Colors.white,
-                            side: BorderSide(color: Colors.red, width: 1),
-                          ),
-                          label: Text(
-                            'Directions',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          icon: Icon(Icons.pin_drop_outlined,
-                              color: Colors.red, size: 20),
-                          onPressed: () {
-                            print('Pressed');
-                          },
-                        )
-                      ],
+                    label: Text(
+                      'Call',
+                      style: TextStyle(color: Colors.red),
                     ),
-                    TabBar(
-                      controller: _tabController,
-                      labelColor: Colors.red,
-                      isScrollable: true,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      //indicator: BoxDecoration(color: Colors.red),
-                      indicatorColor: Colors.red,
-                      unselectedLabelColor: Colors.grey,
-                      unselectedLabelStyle: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey,
-                        //fontWeight: FontWeight.w700,
-                      ),
-                      labelStyle: TextStyle(
-                        fontSize: 20,
-                        //fontWeight: FontWeight.w700,
-                      ),
-                      tabs: tabHeaders(),
+                    icon: Icon(
+                      Icons.phone_outlined,
+                      color: Colors.red,
+                      size: 20,
                     ),
-                    Expanded(
-                      child: TabBarView(
-                          controller: _tabController, children: tabDataEach()
-                          /* [Column(children: tabDataList(),),Container(),Container(),Container(),] */
-                          ),
+                    onPressed: () {
+                      print('Pressed');
+                    },
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      primary: Colors.white,
+                      side: BorderSide(color: Colors.red, width: 1),
                     ),
-                    SlidingUpPanel(
-                      panel: Column(
-                        children: [
-                          //Make CART UI here
-                          Container(
-                            child: Text('This is column text'),
-                          ),
-                          InkWell(
+                    label: Text(
+                      'Directions',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    icon: Icon(Icons.pin_drop_outlined,
+                        color: Colors.red, size: 20),
+                    onPressed: () {
+                      print('Pressed');
+                    },
+                  )
+                ],
+              ),
+              TabBar(
+                controller: _tabController,
+                labelColor: Colors.red,
+                isScrollable: true,
+                indicatorSize: TabBarIndicatorSize.label,
+                //indicator: BoxDecoration(color: Colors.red),
+                indicatorColor: Colors.white,
+                unselectedLabelColor: Colors.grey,
+                unselectedLabelStyle: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey,
+                  //fontWeight: FontWeight.w700,
+                ),
+                labelStyle: TextStyle(
+                  fontSize: 20,
+                  //fontWeight: FontWeight.w700,
+                ),
+                tabs: tabHeaders(),
+              ),
+              Expanded(
+                child: TabBarView(
+                    controller: _tabController, children: tabDataEach()
+                  /* [Column(children: tabDataList(),),Container(),Container(),Container(),] */
+                ),
+              ),
+              SlidingUpPanel(
+                panel: Column(
+
+                  children: [
+                    //Make CART UI here
+
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: InkWell(
                           child: Text('VIEW CART', style: TextStyle(color: Colors.white)),
+
+
                           onTap: () {
                             _pc.open();
                           }
-                        )
-                        ],
                       ),
-                      minHeight: 50,
-                      maxHeight: 300,
-                      backdropColor: Colors.red,
-                      color: Colors.red,
-                      backdropOpacity: 0.5,
-                      controller: _pc,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(width: MediaQuery.of(context).size.width,
+                        height: 50,
+                          color: Colors.orange,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text('Your Name',style: TextStyle(color: Colors.white,fontSize: 15.0)),
+                          ),
+
+                        ),
+                      ],
+                    ),
+                    Container(width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text('Bill Details',style: TextStyle(color: Colors.orange,fontSize: 20.0,fontWeight: FontWeight.bold)),
+                        ),
+
+
+                      ),
+
+
+
+
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                   children: [
+
+                     Container(width:150.0,
+                     height: 18.0,
+                       color: Colors.white,
+                        child: Text('Total Items',style: TextStyle(color: Colors.black,fontSize: 15.0))
+                     ),
+                     Container(width:300.0,
+                         height: 18.0,
+                         color: Colors.white,
+                         child: Padding(
+                           padding: const EdgeInsets.fromLTRB(0.0,0.0,50.0,0.0),
+                           child: Text('Total Items',style: TextStyle(color: Colors.black,fontSize: 15.0),textAlign: TextAlign.right,),
+                         )
+                     ),
+                   ],
+                 ),
+                    Container(width:MediaQuery.of(context).size.width,
+                        height: 18.0,
+                        color: Colors.white,
+                        child: Text('Total Amount',style: TextStyle(color: Colors.black,fontSize: 15.0))
+                    ),
+
+                    Container(width:MediaQuery.of(context).size.width,
+                        height: 18.0,
+                        color: Colors.white,
+                        child: Text('GST Amount',style: TextStyle(color: Colors.black,fontSize: 15.0))
+                    ),
+
+                    Container(width:MediaQuery.of(context).size.width,
+                        height: 18.0,
+                        color: Colors.white,
+                        child: Text('Net Amount Payable',style: TextStyle(color: Colors.black,fontSize: 15.0))
+                    ),
+
+
+                    Expanded(
+                      child: Container(width:double.infinity,
+                          height: 20.0,
+                          color: Colors.white,
+                        margin: const EdgeInsets.fromLTRB(10.0,0.0,10.0,0.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.red)),
+                            onPressed: () { null; },
+
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(10.0,10.0,10.0,10.0),
+                                child: Text(
+                                  'BOOK ORDER',
+
+                                  style: TextStyle(
+                                      fontSize: 15.0,
+
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                    ),
+
+
+
                   ],
                 ),
-              )
+                minHeight: 50,
+                maxHeight: 300,
+                backdropColor: Colors.white,
+                color: Colors.red,
+                backdropOpacity: 0.5,
+                controller: _pc,
+              ),
+
+
+            ],
+          ),
+        )
             : Container(
-                child: Image(
-                image: AssetImage('assets/loading.gif'),
-              )),
+            child: Image(
+              image: AssetImage('assets/loading.gif'),
+            )),
         backgroundColor: Colors.white,
       ),
     );

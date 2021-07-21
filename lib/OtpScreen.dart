@@ -145,7 +145,7 @@ class _NotesPageState extends State<NotesPage> {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(30.0),
                         child: Text(
                           'Enter verification code',
                           style: TextStyle(
@@ -180,6 +180,57 @@ class _NotesPageState extends State<NotesPage> {
                     ),
                   ),
                 ),
+                // Align(
+                //   alignment: Alignment.bottomCenter,
+                //   child: Positioned(
+                //     top: 0,
+                //     right: 0,
+                //     child: Container(
+                //       height: 150,
+                //       width: 150,
+                //       decoration: BoxDecoration(
+                //           color: Colors.white,
+                //           borderRadius: BorderRadius.circular(20)),
+                //       child: FlatButton(
+                //         onPressed: () =>null,
+                //         child: Text(
+                //           'SEND OTP',
+                //           style: TextStyle(
+                //               color: Colors.red,
+                //               fontSize: 15,
+                //               fontWeight: FontWeight.bold),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+
+                Positioned(
+                  top: 200,
+                  right: 0,
+                  bottom: 200,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height/2,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(60),
+                        child: Text(
+                          'We have sent OTP on your mobile number',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+
+                  ),
+
+                ),
+
                 Positioned(
                   top: 210,
                   right: 0,
@@ -192,15 +243,17 @@ class _NotesPageState extends State<NotesPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Text(
-                          'We have sent OTP on your mobile number',
+                          'Enter OTP',
                           style: TextStyle(
-                              color: Colors.black,
+                              color: Colors.red,
                               fontSize: 15,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
+
                   ),
+
                 ),
                 Positioned(
                   child: Align(
@@ -233,64 +286,105 @@ class _NotesPageState extends State<NotesPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0,0.0,0.0,50.0),
                   child: Align(
-                    alignment: Alignment.center,
-
-                      child: Container(
-                        height: 50,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: FlatButton(
-                          onPressed: () => _otpenter(_pinPutController.text),
-                          child: Text(
-                            'VERIFY',
-                            style: TextStyle(
-                                color: Colors.orange,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ),
-                ),
-
-
-
-
-
-
-
-                   Positioned(
-                    top: 450,
-                    right: 70,
-
+                    alignment: Alignment.bottomCenter,
 
                     child: Container(
-                      //margin: const EdgeInsets.fromLTRB(0.0, 150.0, 0.0, 0.0),
-                      color: Colors.white,
-                      width: 250.0,
-                      height: 200.0,
-                      padding: const EdgeInsets.only(top: 80.0),
-                      child: PinPut(
-                        fieldsCount: 4,
-                        eachFieldWidth: 50,
-                        eachFieldHeight: 50,
-                        focusNode: _pinPutFocusNode,
-                        controller: _pinPutController,
-                        submittedFieldDecoration: _pinPutDecoration.copyWith(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        selectedFieldDecoration: _pinPutDecoration,
-                        followingFieldDecoration: _pinPutDecoration.copyWith(
-                          borderRadius: BorderRadius.circular(20.0),
-                          border: Border.all(
-                            color: Colors.deepPurpleAccent.withOpacity(.5),
-                          ),
+                      height: 50,
+                      width: 150,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: FlatButton(
+                        onPressed: () => _otpenter(_pinPutController.text),
+                        child: Text(
+                          'VERIFY',
+                          style: TextStyle(
+                              color: Colors.orange,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
                   ),
+                ),
+
+                //
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0,0.0,0.0,250.0),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+
+                          child: Container(
+                            //margin: const EdgeInsets.fromLTRB(0.0, 150.0, 0.0, 0.0),
+                            color: Colors.white,
+                            width: 220.0,
+                            height: 100.0,
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: PinPut(
+                              fieldsCount: 4,
+                              eachFieldWidth: 50,
+                              eachFieldHeight: 50,
+                              focusNode: _pinPutFocusNode,
+                              controller: _pinPutController,
+                              submittedFieldDecoration: _pinPutDecoration.copyWith(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              selectedFieldDecoration: _pinPutDecoration,
+                              followingFieldDecoration: _pinPutDecoration.copyWith(
+                                borderRadius: BorderRadius.circular(20.0),
+                                border: Border.all(
+                                  color: Colors.deepPurpleAccent.withOpacity(.5),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+
+
+
+
+
+
+
+
+                // Align(
+                //   alignment: Alignment.bottomCenter,
+                //   child: Padding(
+                //     padding: const EdgeInsets.fromLTRB(0.0,20.0,0.0,00.0),
+                //     child: Positioned(
+                //       top: 450,
+                //       right: 70,
+                //
+                //
+                //       child: Container(
+                //         //margin: const EdgeInsets.fromLTRB(0.0, 150.0, 0.0, 0.0),
+                //         color: Colors.white,
+                //         width: 220.0,
+                //         height: 180.0,
+                //         padding: const EdgeInsets.only(top: 80.0),
+                //         child: PinPut(
+                //           fieldsCount: 4,
+                //           eachFieldWidth: 50,
+                //           eachFieldHeight: 50,
+                //           focusNode: _pinPutFocusNode,
+                //           controller: _pinPutController,
+                //           submittedFieldDecoration: _pinPutDecoration.copyWith(
+                //             borderRadius: BorderRadius.circular(20.0),
+                //           ),
+                //           selectedFieldDecoration: _pinPutDecoration,
+                //           followingFieldDecoration: _pinPutDecoration.copyWith(
+                //             borderRadius: BorderRadius.circular(20.0),
+                //             border: Border.all(
+                //               color: Colors.deepPurpleAccent.withOpacity(.5),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
               ],
             ),
@@ -299,5 +393,5 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  }
+}
 
