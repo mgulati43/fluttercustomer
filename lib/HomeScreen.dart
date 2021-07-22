@@ -93,9 +93,11 @@ class _HomePageState extends State<HomePage> {
 
   Widget _searchBar() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(20.0),
+
       //Textfield with icon of search in starting
       child: TextField(
+
         //called when we enter or delete text in textfield
         onChanged: (value) {
           value = value.toLowerCase();
@@ -118,7 +120,7 @@ class _HomePageState extends State<HomePage> {
             hintText: "Search by restaurant name",
             prefixIcon: Icon(Icons.search),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(0.0)))),
+                borderRadius: BorderRadius.all(Radius.circular(10.0)))),
       ),
     );
   }
@@ -243,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                                   searchableRestaurantList[index].address,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize: 10.0,
+                                    fontSize: 15.0,
                                     color: Colors.black54,
                                   ),
                                   maxLines: 1,
@@ -267,7 +269,7 @@ class _HomePageState extends State<HomePage> {
                                   Align(
                                     alignment: Alignment.center,
                                     child: Container(
-                                      width: 170,
+                                      width: 180,
                                       child: Text(
                                           'Cuisines ' +
                                               searchableRestaurantList[index]
@@ -279,7 +281,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(right: 4.0),
+                                    padding: EdgeInsets.only(right: 0.0),
                                     child: ElevatedButton(
                                       style: ButtonStyle(
                                           backgroundColor:

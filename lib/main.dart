@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -38,6 +39,8 @@ class LoginDemo extends StatefulWidget {
 
 class _LoginDemoState extends State<LoginDemo> {
   final TextEditingController _phoneController = TextEditingController();
+
+  CountDownController _controller = CountDownController();
 
   String mobileno = '';
 
@@ -291,18 +294,11 @@ class _LoginDemoState extends State<LoginDemo> {
                     ),
                   ),
                 ),
-
-                // Container(
-                //   height: 3,
-                //   width: 70,
-                //   color: Colors.red,
-                //   child: Text('heya',style: TextStyle(color: Colors.black,fontSize: 20)),
-                //
-                // )
-                //Text('heya',style: TextStyle(color: Colors.black,fontSize: 20))
+    //Text('heya',style: TextStyle(color: Colors.black,fontSize: 20))
               ],
             ),
-          )),
+          )
+      ),
     );
   }
 

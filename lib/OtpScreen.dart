@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +14,10 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   String mobileno = '';
+  bool resendBool = true;
+  bool resendButtonBool = false;
+
+  CountDownController _controller = CountDownController();
 
   final FocusNode _pinPutFocusNode = FocusNode();
   final TextEditingController _pinPutController = TextEditingController();
@@ -117,19 +122,132 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
+  Widget _countdown() {
+    return Positioned(
+      bottom: 120,
+      left: 180,
+
+      child: Align(
+          alignment: Alignment.bottomCenter,
+
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Invoke "debug painting" (press "p" in the console, choose the
+          // "Toggle Debug Paint" action from the Flutter Inspector in Android
+          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+          // to see the wireframe for each widget.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+
+          child: CircularCountDownTimer(
+            // Countdown duration in Seconds.
+            duration: 10,
+
+            // Countdown initial elapsed Duration in Seconds.
+            initialDuration: 0,
+
+            // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
+            controller: _controller,
+
+            // Width of the Countdown Widget.
+            width: MediaQuery.of(context).size.width / 10,
+
+            // Height of the Countdown Widget.
+            height: MediaQuery.of(context).size.height / 10,
+
+            // Ring Color for Countdown Widget.
+            ringColor: Colors.grey,
+
+            // Ring Gradient for Countdown Widget.
+            ringGradient: null,
+
+            // Filling Color for Countdown Widget.
+            fillColor: Colors.purpleAccent,
+
+            // Filling Gradient for Countdown Widget.
+            fillGradient: null,
+
+            // Background Color for Countdown Widget.
+            backgroundColor: Colors.purple[500],
+
+            // Background Gradient for Countdown Widget.
+            backgroundGradient: null,
+
+            // Border Thickness of the Countdown Ring.
+            strokeWidth: 10.0,
+
+            // Begin and end contours with a flat edge and no extension.
+            strokeCap: StrokeCap.round,
+
+            // Text Style for Countdown Text.
+            textStyle: TextStyle(
+                fontSize: 15.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
+
+            // Format for the Countdown Text.
+            textFormat: CountdownTextFormat.S,
+
+            // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
+            isReverse: true,
+
+            // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
+            isReverseAnimation: true,
+
+            // Handles visibility of the Countdown Text.
+            isTimerTextShown: true,
+
+            // Handles the timer start.
+            autoStart: true,
+
+            // This Callback will execute when the Countdown Starts.
+            onStart: () {
+              // Here, do whatever you want
+              print('Countdown Started');
+            },
+
+            onComplete: () {
+              setState(() {
+                resendBool = false;
+                resendButtonBool = true;
+              });
+              // Here, do whatever you want
+              print('Countdown Ended');
+            },
+
+            // This Callback will execute when the Countdown Ends.
+
+            // Here, do whatever you want
+          )),
+      // Container(
+      //   height: 3,
+      //   width: 70,
+      //   color: Colors.red,
+      //   child: Text('heya',style: TextStyle(color: Colors.black,fontSize: 20)),
+      //
+      // )
+    );
+  }
+
   void _navigateToNextScreen(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => HomePage()));
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
           appBar: null,
-          resizeToAvoidBottomInset : false,
+          resizeToAvoidBottomInset: false,
           body: Center(
-
             child: Stack(
               fit: StackFit.expand,
               overflow: Overflow.visible,
@@ -210,7 +328,7 @@ class _NotesPageState extends State<NotesPage> {
                   right: 0,
                   bottom: 200,
                   child: Container(
-                    height: MediaQuery.of(context).size.height/2,
+                    height: MediaQuery.of(context).size.height / 2,
                     width: MediaQuery.of(context).size.width,
                     color: Colors.white,
                     child: Align(
@@ -226,9 +344,7 @@ class _NotesPageState extends State<NotesPage> {
                         ),
                       ),
                     ),
-
                   ),
-
                 ),
 
                 Positioned(
@@ -251,9 +367,7 @@ class _NotesPageState extends State<NotesPage> {
                         ),
                       ),
                     ),
-
                   ),
-
                 ),
                 Positioned(
                   child: Align(
@@ -276,18 +390,13 @@ class _NotesPageState extends State<NotesPage> {
                     height: MediaQuery.of(context).size.height / 2,
                     width: MediaQuery.of(context).size.width,
                     color: Colors.orange,
-
                   ),
                 ),
 
-
-
-
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0,0.0,0.0,50.0),
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 50.0),
                   child: Align(
                     alignment: Alignment.bottomCenter,
-
                     child: Container(
                       height: 50,
                       width: 150,
@@ -307,47 +416,51 @@ class _NotesPageState extends State<NotesPage> {
                     ),
                   ),
                 ),
+                resendBool == true
+                    ? _countdown()
+                    : Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Resend Otp',
+                              style:
+                                  TextStyle(color: Colors.yellow, fontSize: 15),
+                            )),
+                      ),
 
                 //
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0,0.0,0.0,250.0),
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 250.0),
                   child: Align(
                     alignment: Alignment.bottomCenter,
-
-                          child: Container(
-                            //margin: const EdgeInsets.fromLTRB(0.0, 150.0, 0.0, 0.0),
-                            color: Colors.white,
-                            width: 220.0,
-                            height: 100.0,
-                            padding: const EdgeInsets.only(top: 20.0),
-                            child: PinPut(
-                              fieldsCount: 4,
-                              eachFieldWidth: 50,
-                              eachFieldHeight: 50,
-                              focusNode: _pinPutFocusNode,
-                              controller: _pinPutController,
-                              submittedFieldDecoration: _pinPutDecoration.copyWith(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              selectedFieldDecoration: _pinPutDecoration,
-                              followingFieldDecoration: _pinPutDecoration.copyWith(
-                                borderRadius: BorderRadius.circular(20.0),
-                                border: Border.all(
-                                  color: Colors.deepPurpleAccent.withOpacity(.5),
-                                ),
-                              ),
-                            ),
+                    child: Container(
+                      //margin: const EdgeInsets.fromLTRB(0.0, 150.0, 0.0, 0.0),
+                      color: Colors.white,
+                      width: 220.0,
+                      height: 100.0,
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: PinPut(
+                        fieldsCount: 4,
+                        eachFieldWidth: 50,
+                        eachFieldHeight: 50,
+                        focusNode: _pinPutFocusNode,
+                        controller: _pinPutController,
+                        submittedFieldDecoration: _pinPutDecoration.copyWith(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        selectedFieldDecoration: _pinPutDecoration,
+                        followingFieldDecoration: _pinPutDecoration.copyWith(
+                          borderRadius: BorderRadius.circular(20.0),
+                          border: Border.all(
+                            color: Colors.deepPurpleAccent.withOpacity(.5),
                           ),
                         ),
                       ),
-
-
-
-
-
-
-
-
+                    ),
+                  ),
+                ),
 
                 // Align(
                 //   alignment: Alignment.bottomCenter,
@@ -385,13 +498,9 @@ class _NotesPageState extends State<NotesPage> {
                 //     ),
                 //   ),
                 // ),
-
               ],
             ),
-          )
-      ),
+          )),
     );
   }
-
 }
-
