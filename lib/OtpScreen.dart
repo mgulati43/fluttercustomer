@@ -16,6 +16,7 @@ class _NotesPageState extends State<NotesPage> {
   String mobileno = '';
   bool resendBool = true;
   bool resendButtonBool = false;
+  
 
   CountDownController _controller = CountDownController();
 
@@ -28,6 +29,65 @@ class _NotesPageState extends State<NotesPage> {
         border: Border.all(color: Colors.deepPurpleAccent),
         borderRadius: BorderRadius.circular(15.0),
         color: Colors.white);
+  }
+
+  void _otpResend() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    mobileno = prefs.getString('phone').toString();
+    print('testing' + mobileno);
+
+    String decodedResponse = '';
+        String name;
+        //API call here for verifying otp
+        var urlSent = Uri.encodeFull(
+            'http://35.154.190.204/Restaurant/index.php/customer/Api/login');
+        //map of string and object type used in http post
+        var map = new Map<String, dynamic>();
+        //get mobile number from phone textfield
+        map['mobile_no'] = mobileno;
+        map['device_id'] = 'ldnxlnlxdnlngnxlgk';
+        map['notification_id'] = '123'; //otp here
+        var url = Uri.parse(urlSent);
+        var response;
+        //http request by encoding request in utf8 format and decoding in utf8 format
+        //content type application/x-www-form-urlencoded
+        try {
+          response = await http.post(url,
+              body: map,
+              headers: {"Content-Type": "application/x-www-form-urlencoded"},
+              encoding: Encoding.getByName("utf-8"));
+          decodedResponse = utf8.decode(response.bodyBytes);
+          //map of string and object type used for storing data coming from otp response
+          Map<String, dynamic> mapOtpResponse = jsonDecode(decodedResponse);
+          //fetch message Response status ie invalid otp or valid otp
+          String messageResponse = mapOtpResponse['data']['message'];
+          //if messageResponse is invalid otp display the message of invalid otp
+          //else proceed to homescreen
+          print('demo' + messageResponse);
+
+          if (messageResponse == 'Success') {
+            Fluttertoast.showToast(
+              msg: messageResponse,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.SNACKBAR,
+              backgroundColor: Colors.red,
+              textColor: Colors.black,
+              fontSize: 16.0,
+            );
+          } else {
+            Fluttertoast.showToast(
+                msg: 'Failure',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0);
+          }
+        } catch (e) {
+          //Write exception statement here
+
+        }
   }
 
   void _otpenter(String otp) async {
@@ -339,10 +399,24 @@ class _NotesPageState extends State<NotesPage> {
                           ),
                           resendBool == true
                     ? _countdown()
-                    : Text(
-                              'Resend Otp',
-                              style: TextStyle(color: Colors.black, fontSize: 15),
-                            )
+                    : Container(
+                      margin: EdgeInsets.only(top: 10),
+                            height: 50,
+                            width: 150,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: FlatButton(
+                              onPressed: () => _otpResend(),
+                              child: Text(
+                                'Resend OTP',
+                                style: TextStyle(
+                                    color: Colors.orange,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )
                         ]))),
           ],
         ),
