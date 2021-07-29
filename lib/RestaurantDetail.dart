@@ -56,21 +56,26 @@ class _RestDetailState extends State<RestDetail>
   }
 
   Future<void> callListApi(int cat_id) async {
-    var response;
-    String decodedResponse = '';
-    //API call here
-    var urlSent = Uri.encodeFull(
+    try {
+      var response;
+      String decodedResponse = '';
+      //API call here
+      /* var urlSent = Uri.encodeFull(
         'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
     var map = new Map<String, dynamic>();
     map['admin_id'] = 'HRGR00001';
     map['cat_id'] = cat_id.toString();
     var url = Uri.parse(urlSent);
-    try {
+    
       response = await http.post(url,
           body: map,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
           encoding: Encoding.getByName("utf-8"));
-      decodedResponse = utf8.decode(response.bodyBytes);
+      decodedResponse = utf8.decode(response.bodyBytes); */
+
+      //Below line should be commented if there is no response from server, I have just hardcoded the response, please comment this and uncomment above part if server is working
+      decodedResponse =
+          '{"data":[{"sub_cat_name":"soup","sub_cat_id":"1","foodItem":[{"menu_name":"Soup","menu_full_price":"300","menu_category_id":4,"menu_id":"MENU_00006","cat_id":1,"sub_cat_id":1,"admin_id":"HRGR00001","qty":0,"half_qty":0,"full_qty":0,"positions":0,"menu_food_type":"Veg","cat_name":"Vegetarian","menu_image":"asd"}]}]}';
 
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
       setState(() {
@@ -84,11 +89,11 @@ class _RestDetailState extends State<RestDetail>
       });
     } catch (e) {
       //Write exception statement here
-
+      print('In exception');
     }
   }
 
-  void addToCart(MenuJsonParser menuItem) {
+  /* void addToCart(MenuJsonParser menuItem) {
     setState(() {});
     // menuItem.quantity++;
     //
@@ -126,7 +131,7 @@ class _RestDetailState extends State<RestDetail>
         menuItem.quantity--;
       });
     }
-  }
+  } */
 
   List<Widget> tabHeaders() {
     List<Widget> headersReturn = [];
@@ -146,113 +151,159 @@ class _RestDetailState extends State<RestDetail>
             itemBuilder: (context, index) {
               return Padding(
                 padding: EdgeInsets.all(2.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12,
-                            spreadRadius: 2.0,
-                            blurRadius: 5.0),
-                      ]),
-                  margin: EdgeInsets.all(5.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10.0),
-                            bottomLeft: Radius.circular(10.0)),
-                        child: _displayImage(
-                            base64Decode(completeList[cat][index].menu_image)),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        completeList[cat][index].sub_cat_name,
-                                        style: TextStyle(
-                                            fontSize: 15.0,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        'COST: Rs ',
+                child: ExpansionTile(
+                  backgroundColor: Colors.green[50],
+                  collapsedBackgroundColor: Colors.green[50],
+                  onExpansionChanged: (e) {
+                    //Your code
+                  },
+                  title: Text(completeList[cat][index].sub_cat_name),
+                  children: [
+                    ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        itemCount: completeList[cat][index].foodItem.length,
+                        itemBuilder: (BuildContext context, int indexAnother) {
+                          return Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black12,
+                                      spreadRadius: 2.0,
+                                      blurRadius: 5.0),
+                                ]),
+                            margin: EdgeInsets.all(5.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10.0),
+                                      bottomLeft: Radius.circular(10.0)),
+                                  child: Image.asset(
+                                      'assets/dummyRestaurant.png',
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover)
 
-                                        style: TextStyle(
-                                          fontSize: 10.0,
-                                          color: Colors.black,
+                                  /* _displayImage(
+                            base64Decode(completeList[cat][index].menu_image)) */
+                                  ,
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  completeList[cat][index]
+                                                      .foodItem[indexAnother]
+                                                      .menu_name,
+                                                  style: TextStyle(
+                                                      fontSize: 15.0,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  'COST: Rs ' +
+                                                      completeList[cat][index]
+                                                          .foodItem[
+                                                              indexAnother]
+                                                          .menu_full_price,
+                                                  style: TextStyle(
+                                                    fontSize: 10.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Container(
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Colors.red),
+                                                  borderRadius:
+                                                      BorderRadius.circular(4)),
+                                              child: Row(
+                                                children: [
+                                                  InkWell(
+                                                      onTap: () =>
+                                                          {} /* removeFromCart(
+                                                completeList[cat][index]) */
+                                                      ,
+                                                      child: Container(
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 3,
+                                                                  right: 3),
+                                                          child: Icon(
+                                                            Icons
+                                                                .delete_outline,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      )),
+                                                  Container(
+                                                      height: double.infinity,
+                                                      width: 30,
+                                                      color: Colors.red,
+                                                      child: Center(
+                                                          child: Text(
+                                                        completeList[cat][index]
+                                                            .foodItem[
+                                                                indexAnother]
+                                                            .quantity
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ))),
+                                                  InkWell(
+                                                      onTap: () =>
+                                                          {} /*addToCart(
+                                                completeList[cat][index]) */
+                                                      ,
+                                                      child: Container(
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 3,
+                                                                  right: 3),
+                                                          child: Icon(
+                                                            Icons.add_outlined,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      ))
+                                                ],
+                                              ),
+                                            )
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.red),
-                                        borderRadius: BorderRadius.circular(4)),
-                                    child: Row(
-                                      children: [
-                                        InkWell(
-                                            onTap: () => removeFromCart(
-                                                completeList[cat][index]),
-                                            child: Container(
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 3, right: 3),
-                                                child: Icon(
-                                                  Icons.delete_outline,
-                                                  color: Colors.red,
-                                                ),
-                                              ),
-                                            )),
-                                        Container(
-                                            height: double.infinity,
-                                            width: 30,
-                                            color: Colors.red,
-                                            child: Center(
-                                                child: Text(
-                                              completeList[cat][index]
-                                                  .quantity
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ))),
-                                        InkWell(
-                                            onTap: () => addToCart(
-                                                completeList[cat][index]),
-                                            child: Container(
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 3, right: 3),
-                                                child: Icon(
-                                                  Icons.add_outlined,
-                                                  color: Colors.red,
-                                                ),
-                                              ),
-                                            ))
                                       ],
                                     ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        })
+                  ],
                 ),
               );
             }),
@@ -623,26 +674,36 @@ class _RestDetailState extends State<RestDetail>
 class MenuJsonParser {
   String sub_cat_name;
   String sub_cat_id;
-  String menu_name;
-  String menu_fix_price;
-  String menu_image;
-  int quantity;
+  List<FoodItem> foodItem;
 
-  MenuJsonParser(this.sub_cat_name, this.sub_cat_id, this.menu_name,
-      this.menu_fix_price, this.menu_image, this.quantity);
+  MenuJsonParser(this.sub_cat_name, this.sub_cat_id, this.foodItem);
 
   factory MenuJsonParser.fromJson(dynamic json) {
     if (!json['foodItem'].isEmpty) {
-      return MenuJsonParser(
-          json['sub_cat_name'] as String,
-          json['sub_cat_id'] as String,
-          json['foodItem'][0]['menu_name'] as String,
-          json['foodItem'][0]['menu_fix_price'] as String,
-          json['foodItem'][0]['menu_image'] as String,
-          0);
-    } else {
+      var list = json['foodItem'] as List;
+      List<FoodItem> foodItemList =
+          list.map((i) => FoodItem.fromJson(i)).toList();
       return MenuJsonParser(json['sub_cat_name'] as String,
-          json['sub_cat_id'] as String, '', '', '', 0);
+          json['sub_cat_id'] as String, foodItemList);
+    } else {
+      return MenuJsonParser(
+          json['sub_cat_name'] as String, json['sub_cat_id'] as String, []);
     }
+  }
+}
+
+class FoodItem {
+  String? menu_name;
+  String? menu_full_price;
+  String? menu_image;
+  int quantity = 0;
+
+  FoodItem({this.menu_name, this.menu_full_price, this.menu_image});
+
+  factory FoodItem.fromJson(dynamic json) {
+    return FoodItem(
+        menu_name: json['menu_name'],
+        menu_full_price: json['menu_full_price'],
+        menu_image: json['menu_image']);
   }
 }
