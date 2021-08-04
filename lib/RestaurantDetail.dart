@@ -17,6 +17,7 @@ class RestDetail extends StatefulWidget {
 
 class _RestDetailState extends State<RestDetail>
     with SingleTickerProviderStateMixin {
+  
   TabController? _tabController;
   final PanelController _pc = new PanelController();
   List<MenuJsonParser> cart = [];
@@ -37,93 +38,39 @@ class _RestDetailState extends State<RestDetail>
   void initState() {
     // initialise your tab controller here
     callList();
-    //categoryList = ['Main Course', 'Beverages'];
-    callAPIinLoop();
-    _tabController = TabController(length: categoryList.length, vsync: this);
     super.initState();
   }
 
   Future<void> callList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String admin = prefs.getString('adminid').toString();
-    String arrayObjsText =
-        '{"status":"1","data":[{"id":"1","cat_id":"1","cat_name":"Vegetarian ","admin_id":"HRGR00001","creation_date":"2021-07-06 16:12:29","status":"1"},{"id":"5","cat_id":"5","cat_name":"Bakery","admin_id":"HRGR00001","creation_date":"2021-07-06 16:24:52","status":"1"},{"id":"6","cat_id":"6","cat_name":"main course","admin_id":"HRGR00001","creation_date":"2021-07-06 16:32:14","status":"1"}]}';
-    print('dhoni1');
-    var tagObjsJson = jsonDecode(arrayObjsText)['data'] as List;
-    print('dhoni2');
-    tagObjs = tagObjsJson.map((tagJson) => Tag.fromJson(tagJson)).toList();
-    print('dhon3');
+    String admin = widget.rest.admin_id;
+    var response;
+    String decodedResponse = '';
+    // //API call here
+    var urlSent = Uri.encodeFull('http://35.154.190.204/Restaurant/index.php/customer/Api/getRestaurantCategory');
+    var map = new Map<String, dynamic>();
+    map['admin_id'] = admin;
+    var url = Uri.parse(urlSent);
+    try {
+       response = await http.post(url,
+           body: map,
+           headers: {"Content-Type": "application/x-www-form-urlencoded"},
+           encoding: Encoding.getByName("utf-8"));
+       decodedResponse = utf8.decode(response.bodyBytes);
+       
+       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
+
+    tagObjs = jsonObjects.map((tagJson) => Tag.fromJson(tagJson)).toList();
     setState(() {
       for (int i = 0; i < tagObjs.length; i++) {
         categoryList.insert(i, tagObjs[i].cat_name);
       }
-
-      print('dhoni4' + categoryList[0].toString());
     });
-
-    // var response;
-    // String decodedResponse = '';
-    // //API call here
-    // var urlSent = Uri.encodeFull(
-    //     'http://35.154.190.204/Restaurant/index.php/customer/Api/getRestaurantCategory');
-    // var map = new Map<String, dynamic>();
-    // map['admin_id'] = 'HRGR00001';
-    // var url = Uri.parse(urlSent);
-    // try {
-    //   response = await http.post(url,
-    //       body: map,
-    //       headers: {"Content-Type": "application/x-www-form-urlencoded"},
-    //       encoding: Encoding.getByName("utf-8"));
-    //   decodedResponse = utf8.decode(response.bodyBytes);
-    //   print('gulati'+decodedResponse);
-    //   var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
-
-    // setState(() {
-    //   categoryList.add(jsonObjects
-    //       .map((jsonObject) => MenuJsonParser.fromJson(jsonObject))
-    //       .toList());
-    //
-    //    print('heya'+categoryList.length.toString());
-    // });
-    // } catch (e) {
-    //   //Write exception statement here
-    //
-    // }
-
-    // try {
-    //   var response;
-    //   String decodedResponse = '';
-    //API call here
-    /* var urlSent = Uri.encodeFull(
-        'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
-    var map = new Map<String, dynamic>();
-    map['admin_id'] = 'HRGR00001';
-    map['cat_id'] = cat_id.toString();
-    var url = Uri.parse(urlSent);
-
-      response = await http.post(url,
-          body: map,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          encoding: Encoding.getByName("utf-8"));
-      decodedResponse = utf8.decode(response.bodyBytes); */
-
-    //Below line should be commented if there is no response from server, I have just hardcoded the response, please comment this and uncomment above part if server is working
-    // decodedResponse =
-    // '{"status":"1","data":[{"id":"1","cat_id":"1","cat_name":"Vegetarian ","admin_id":"HRGR00001","creation_date":"2021-07-06 16:12:29","status":"1"},{"id":"5","cat_id":"5","cat_name":"Bakery","admin_id":"HRGR00001","creation_date":"2021-07-06 16:24:52","status":"1"},{"id":"6","cat_id":"6","cat_name":"main course","admin_id":"HRGR00001","creation_date":"2021-07-06 16:32:14","status":"1"}]}';
-    //
-    // var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
-    // setState(() {
-    //   completeList.add(jsonObjects
-    //       .map((jsonObject) => MenuJsonParser.fromJson(jsonObject))
-    //       .toList());
-    //
-    //   print('mayank'+completeList[0]['']);
-
-    //   });
-    // } catch (e) {
-    //   //Write exception statement here
-    //   print('In exception');
-    // }
+    _tabController = TabController(length: categoryList.length, vsync: this);
+    callAPIinLoop();
+     } catch (e) {
+       //Write exception statement here
+    
+     }
   }
 
   //display image of restaurant from server and display dummy image if no image from server
@@ -147,7 +94,7 @@ class _RestDetailState extends State<RestDetail>
       var response;
       String decodedResponse = '';
       //API call here
-      /* var urlSent = Uri.encodeFull(
+    var urlSent = Uri.encodeFull(
         'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
     var map = new Map<String, dynamic>();
     map['admin_id'] = 'HRGR00001';
@@ -158,18 +105,18 @@ class _RestDetailState extends State<RestDetail>
           body: map,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
           encoding: Encoding.getByName("utf-8"));
-      decodedResponse = utf8.decode(response.bodyBytes); */
+      decodedResponse = utf8.decode(response.bodyBytes);
 
       //Below line should be commented if there is no response from server, I have just hardcoded the response, please comment this and uncomment above part if server is working
-      decodedResponse =
+      /* decodedResponse =
       '{"data":[{"sub_cat_name":"soup","sub_cat_id":"1","foodItem":[{"menu_name":"Soup","menu_full_price":"300","menu_category_id":4,"menu_id":"MENU_00006","cat_id":1,"sub_cat_id":1,"admin_id":"HRGR00001","qty":0,"half_qty":0,"full_qty":0,"positions":0,"menu_food_type":"Veg","cat_name":"Vegetarian","menu_image":"asd"}]}]}';
-
+ */
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
       setState(() {
         completeList.add(jsonObjects
             .map((jsonObject) => MenuJsonParser.fromJson(jsonObject))
             .toList());
-
+        print(completeList.toString());
         if (cat_id == categoryList.length) {
           _loading = false;
         }
