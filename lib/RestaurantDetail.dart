@@ -20,17 +20,13 @@ class _RestDetailState extends State<RestDetail>
   
   TabController? _tabController;
   final PanelController _pc = new PanelController();
-  List<MenuJsonParser> cart = [];
-  List<MenuJsonParser> foodCategoryOne = [];
-  List<MenuJsonParser> foodCategoryTwo = [];
-  List<MenuJsonParser> foodCategoryThree = [];
-  List<MenuJsonParser> foodCategoryFour = [];
+  var cartMap = new Map<String, FoodItem>();
   List completeList = [];
   bool _loading = true;
   List<String> categoryList = [];
   int counter = 0;
 
-  int totalcounter = 0;
+  var totalcounter = 0;
 
   List<Tag> tagObjs = [];
 
@@ -112,11 +108,11 @@ class _RestDetailState extends State<RestDetail>
       '{"data":[{"sub_cat_name":"soup","sub_cat_id":"1","foodItem":[{"menu_name":"Soup","menu_full_price":"300","menu_category_id":4,"menu_id":"MENU_00006","cat_id":1,"sub_cat_id":1,"admin_id":"HRGR00001","qty":0,"half_qty":0,"full_qty":0,"positions":0,"menu_food_type":"Veg","cat_name":"Vegetarian","menu_image":"asd"}]}]}';
  */
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
+      print(jsonObjects);
       setState(() {
         completeList.add(jsonObjects
             .map((jsonObject) => MenuJsonParser.fromJson(jsonObject))
             .toList());
-        print(completeList.toString());
         if (cat_id == categoryList.length) {
           _loading = false;
         }
@@ -127,45 +123,39 @@ class _RestDetailState extends State<RestDetail>
     }
   }
 
-  /* void addToCart(MenuJsonParser menuItem) {
-    setState(() {});
-    // menuItem.quantity++;
-    //
-    //
-    // cart.add(menuItem);
-    // for(int i =0;i<cart.length;i++)
-    // {
-    //   var n = int.parse(cart[i].menu_fix_price);
-    //   totalcounter = menuItem.quantity*n;
-    // }
-    //
-    //
-    // print('mayank'+totalcounter.toString());
-
-    menuItem.quantity++;
-
-    cart.add(menuItem);
-    for (int i = 0; i < cart.length; i++) {
-      int n = int.parse(cart[i].menu_fix_price);
-
-      totalcounter = cart.length * n;
-      //a = totalcounter;
-    }
-    // for (int count = 0; count < cart.length; count++) {
-    //   var myInt = int.parse(cart[count].menu_fix_price);
-    //   assert(myInt is int);
-    //   totalcounter = totalcounter + myInt;
-    //   print('mayank'+totalcounter.toString());
-    // }
+  void addToCart(FoodItem foodItem) {
+    setState(() {
+      foodItem.quantity++;
+      //String menuId = foodItem['menu_id'];
+      cartMap[foodItem.menu_id ?? ""] = foodItem;
+      print(cartMap);
+      var price = int.tryParse(foodItem.menu_fix_price ?? "");
+      if (price == null) {
+          print("bad price");
+      } else {
+          totalcounter += price;
+          print(totalcounter);
+      }
+    });
   }
 
-  void removeFromCart(MenuJsonParser menuItem) {
-    if (menuItem.quantity != 0) {
+  void removeFromCart(FoodItem foodItem) {
+    if (foodItem.quantity != 0) {
       setState(() {
-        menuItem.quantity--;
+        foodItem.quantity--;
+        var price = int.tryParse(foodItem.menu_fix_price ?? "");
+        if (price == null) {
+            print("bad price");
+        } else {
+            totalcounter -= price;
+            print(totalcounter);
+        }
+        if(foodItem.quantity == 0){
+          cartMap.remove(foodItem.menu_id);
+        }
       });
     }
-  } */
+  }
 
   List<Widget> tabHeaders() {
     List<Widget> headersReturn = [];
@@ -219,16 +209,8 @@ class _RestDetailState extends State<RestDetail>
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(10.0),
                                       bottomLeft: Radius.circular(10.0)),
-                                  child: Image.asset(
-                                      'assets/dummyRestaurant.png',
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover)
-
-                                  /* _displayImage(
-                            base64Decode(completeList[cat][index].menu_image)) */
-                                  ,
-                                ),
+                                  child: _displayImage(
+                            base64Decode(completeList[cat][index].foodItem[indexAnother].menu_image))),
                                 Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.all(4.0),
@@ -257,7 +239,7 @@ class _RestDetailState extends State<RestDetail>
                                                       completeList[cat][index]
                                                           .foodItem[
                                                       indexAnother]
-                                                          .menu_full_price,
+                                                          .menu_fix_price,
                                                   style: TextStyle(
                                                     fontSize: 10.0,
                                                     color: Colors.black,
@@ -276,8 +258,10 @@ class _RestDetailState extends State<RestDetail>
                                                 children: [
                                                   InkWell(
                                                       onTap: () =>
-                                                      {} /* removeFromCart(
-                                                completeList[cat][index]) */
+                                                      removeFromCart(
+                                                completeList[cat][index]
+                                                          .foodItem[
+                                                      indexAnother])
                                                       ,
                                                       child: Container(
                                                         child: Padding(
@@ -309,9 +293,10 @@ class _RestDetailState extends State<RestDetail>
                                                           ))),
                                                   InkWell(
                                                       onTap: () =>
-                                                      {} /*addToCart(
-                                                completeList[cat][index]) */
-                                                      ,
+                                                      addToCart(
+                                                completeList[cat][index]
+                                                          .foodItem[
+                                                      indexAnother]),
                                                       child: Container(
                                                         child: Padding(
                                                           padding:
@@ -606,55 +591,47 @@ class _RestDetailState extends State<RestDetail>
                                   height: 1,
                                 ),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Padding(
+                                    Padding(
                                           padding:
                                           const EdgeInsets.all(10.0),
                                           child: Text('Total Items ',
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 20)),
-                                        )),
-                                    Align(
-                                        alignment: Alignment.topRight,
-                                        child: Padding(
+                                        ),
+                                        Padding(
                                           padding:
-                                          const EdgeInsets.fromLTRB(
-                                              100.0, 0.0, 0.0, 0.0),
+                                          const EdgeInsets.fromLTRB(10, 10, 100, 10),
                                           child: Text(
-                                              cart.length.toString(),
+                                              cartMap.length.toString(),
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 20)),
-                                        )),
+                                        ),
                                   ],
                                 ),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Padding(
+                                    Padding(
                                           padding:
                                           const EdgeInsets.all(10.0),
                                           child: Text('Total Amount ',
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 20)),
-                                        )),
-                                    Align(
-                                        alignment: Alignment.topRight,
-                                        child: Padding(
+                                        ),
+                                    Padding(
                                           padding:
-                                          const EdgeInsets.fromLTRB(
-                                              100.0, 0.0, 0.0, 0.0),
+                                          const EdgeInsets.fromLTRB(10, 10, 100, 10),
                                           child: Text(
                                               totalcounter.toString(),
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 20)),
-                                        )),
+                                        ),
                                   ],
                                 ),
                                 Row(
@@ -728,25 +705,24 @@ class MenuJsonParser {
 
 class FoodItem {
   String? menu_name;
-  String? menu_full_price;
+  String? menu_fix_price;
   String? menu_image;
+  String? menu_id;
   int quantity = 0;
 
-  FoodItem({this.menu_name, this.menu_full_price, this.menu_image});
+  FoodItem({this.menu_name, this.menu_fix_price, this.menu_image, this.menu_id});
 
   factory FoodItem.fromJson(dynamic json) {
     return FoodItem(
         menu_name: json['menu_name'],
-        menu_full_price: json['menu_full_price'],
-        menu_image: json['menu_image']);
+        menu_fix_price: json['menu_fix_price'],
+        menu_image: json['menu_image'],
+        menu_id: json['menu_id']);
   }
-
-
 }
 
 class Tag {
   String cat_name;
-
   Tag(this.cat_name);
 
   factory Tag.fromJson(dynamic json) {
