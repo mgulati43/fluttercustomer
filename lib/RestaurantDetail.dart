@@ -6,6 +6,7 @@ import 'HomeScreen.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class RestDetail extends StatefulWidget {
   _RestDetailState createState() => _RestDetailState();
@@ -24,11 +25,8 @@ class _RestDetailState extends State<RestDetail>
   bool _loading = true;
   List<String> categoryList = [];
   int counter = 0;
-
   var totalcounter = 0;
-
   List<Tag> tagObjs = [];
-
   @override
   void initState() {
     // initialise your tab controller here
@@ -54,7 +52,7 @@ class _RestDetailState extends State<RestDetail>
       decodedResponse = utf8.decode(response.bodyBytes);
 
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
-
+      //categoryList.insert(0, 'Desert');
       tagObjs = jsonObjects.map((tagJson) => Tag.fromJson(tagJson)).toList();
       setState(() {
         for (int i = 0; i < tagObjs.length; i++) {
@@ -65,7 +63,7 @@ class _RestDetailState extends State<RestDetail>
       callAPIinLoop();
     } catch (e) {
       //Write exception statement here
-
+      print(e);
     }
   }
 
@@ -102,11 +100,10 @@ class _RestDetailState extends State<RestDetail>
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
           encoding: Encoding.getByName("utf-8"));
       decodedResponse = utf8.decode(response.bodyBytes);
-
       //Below line should be commented if there is no response from server, I have just hardcoded the response, please comment this and uncomment above part if server is working
-      /* decodedResponse =
+      /*decodedResponse =
       '{"data":[{"sub_cat_name":"soup","sub_cat_id":"1","foodItem":[{"menu_name":"Soup","menu_full_price":"300","menu_category_id":4,"menu_id":"MENU_00006","cat_id":1,"sub_cat_id":1,"admin_id":"HRGR00001","qty":0,"half_qty":0,"full_qty":0,"positions":0,"menu_food_type":"Veg","cat_name":"Vegetarian","menu_image":"asd"}]}]}';
- */
+*/
       var jsonObjects = jsonDecode(decodedResponse)['data'] as List;
       print(jsonObjects);
       setState(() {
@@ -116,7 +113,8 @@ class _RestDetailState extends State<RestDetail>
         if (cat_id == categoryList.length) {
           _loading = false;
         }
-      });
+      }
+      );
     } catch (e) {
       //Write exception statement here
       print('In exception');
@@ -332,6 +330,57 @@ class _RestDetailState extends State<RestDetail>
     }
 
     return widgetReturn;
+  }
+
+  // Modal alert for order confirm
+  onPressOfOrderPlace(context) {
+    Alert(
+        context: context,
+        title: "Select Table",
+        content: Column(
+          children: <Widget>[
+            Text('Please call the waiter for asking the table number and proceed with the order.'),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Enter Table Number*',
+              ),
+            ),
+          ],
+        ),
+        buttons: [
+        DialogButton(
+            color: Colors.red,
+            onPressed: () => orderPlacement(context),
+            child: Text(
+              "Order Place",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ]).show();
+  }
+
+  successfulOrderPlace(context) {
+    Alert(
+        context: context,
+        title: "Success",
+        content: Text('Your order has been placed'),
+        buttons: [
+          DialogButton(
+            color: Colors.red,
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Close",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ]
+        ).show();
+  }
+
+  void orderPlacement(context){
+    //Here make the api call to submit cart items
+    Navigator.pop(context);
+    successfulOrderPlace(context);
   }
 
   @override
@@ -700,12 +749,16 @@ class _RestDetailState extends State<RestDetail>
                                               )),
                                         ],
                                       ),
+                                      ElevatedButton(
+                                        child: Text('PLACE ORDER'),
+                                        onPressed: () => onPressOfOrderPlace(context),
+                                      ),
                                     ],
                                   ))),
                         ],
                       ),
                       minHeight: 40,
-                      maxHeight: 500,
+                      maxHeight:400,
                       color: Colors.orange,
                       backdropOpacity: 0.5,
                       controller: _pc,
