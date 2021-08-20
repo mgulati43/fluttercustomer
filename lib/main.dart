@@ -71,11 +71,12 @@ class _LoginDemoState extends State<LoginDemo> {
           fontSize: 16.0);
     } else {
       if (_phoneController.text.length == 10) {
+
         String decodedResponse = '';
         String name;
         //API call here for verifying otp
         var urlSent = Uri.encodeFull(
-            'http://35.154.190.204/Restaurant/index.php/customer/Api/login');
+            'http://dev.goolean.com/Restaurant/index.php/customer/Api/login');
         //map of string and object type used in http post
         var map = new Map<String, dynamic>();
         //get mobile number from phone textfield
@@ -109,6 +110,14 @@ class _LoginDemoState extends State<LoginDemo> {
               textColor: Colors.black,
               fontSize: 16.0,
             );
+            Fluttertoast.showToast(
+              msg: "",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.SNACKBAR,
+              backgroundColor: Colors.red,
+              textColor: Colors.black,
+              fontSize: 16.0,
+            );
             _navigateToNextScreen(context);
           } else {
             Fluttertoast.showToast(
@@ -121,6 +130,7 @@ class _LoginDemoState extends State<LoginDemo> {
                 fontSize: 16.0);
           }
         } catch (e) {
+
           //Write exception statement here
 
         }

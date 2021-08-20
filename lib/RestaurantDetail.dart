@@ -40,7 +40,7 @@ class _RestDetailState extends State<RestDetail>
     String decodedResponse = '';
     // //API call here
     var urlSent = Uri.encodeFull(
-        'http://35.154.190.204/Restaurant/index.php/customer/Api/getRestaurantCategory');
+        'http://dev.goolean.com/Restaurant/index.php/customer/Api/getRestaurantCategory');
     var map = new Map<String, dynamic>();
     map['admin_id'] = admin;
     var url = Uri.parse(urlSent);
@@ -89,7 +89,7 @@ class _RestDetailState extends State<RestDetail>
       String decodedResponse = '';
       //API call here
       var urlSent = Uri.encodeFull(
-          'http://35.154.190.204/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
+          'http://dev.goolean.com/Restaurant/index.php/customer/Api/getMenuListDataCustomer');
       var map = new Map<String, dynamic>();
       map['admin_id'] = 'HRGR00001';
       map['cat_id'] = cat_id.toString();
@@ -749,6 +749,7 @@ class _RestDetailState extends State<RestDetail>
                                               )),
                                         ],
                                       ),
+                                      //comments
                                       ElevatedButton(
                                         child: Text('PLACE ORDER'),
                                         onPressed: () => onPressOfOrderPlace(context),

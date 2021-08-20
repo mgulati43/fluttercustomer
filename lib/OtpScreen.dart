@@ -41,7 +41,7 @@ class _NotesPageState extends State<NotesPage> {
         String name;
         //API call here for verifying otp
         var urlSent = Uri.encodeFull(
-            'http://35.154.190.204/Restaurant/index.php/customer/Api/login');
+            'http://dev.goolean.com/Restaurant/index.php/customer/Api/login');
         //map of string and object type used in http post
         var map = new Map<String, dynamic>();
         //get mobile number from phone textfield
@@ -102,7 +102,7 @@ class _NotesPageState extends State<NotesPage> {
       String name;
       //API call here for verifying otp
       var urlSent = Uri.encodeFull(
-          'http://35.154.190.204/Restaurant/index.php/customer/Api/verification_otp_customer');
+          'http://dev.goolean.com/Restaurant/index.php/customer/Api/verification_otp_customer');
       //map of string and object type used in http post
       var map = new Map<String, dynamic>();
       //get mobile number from phone textfield

@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
     String decodedResponse = '';
     //API call here
     var urlSent = Uri.encodeFull(
-        'http://35.154.190.204/Restaurant/index.php/customer/Api/getNearbySpots');
+        'http://dev.goolean.com/Restaurant/index.php/customer/Api/getNearbySpots');
     var map = new Map<String, dynamic>();
     //input parameter
     map['city'] = '';
