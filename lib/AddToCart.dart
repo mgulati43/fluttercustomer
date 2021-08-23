@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'RestaurantDetail.dart';
+import 'dart:convert';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class AddToCart extends StatefulWidget {
   _AddToCartState createState() => _AddToCartState();
@@ -14,6 +16,7 @@ class AddToCart extends StatefulWidget {
 
 class _AddToCartState extends State<AddToCart> {
   Map<String, String> cartPageInfo = new Map<String, String>();
+  final tableController = TextEditingController();
   void initState(){
 
     String menu_item_name = '';
@@ -53,6 +56,84 @@ class _AddToCartState extends State<AddToCart> {
     print(cartPageInfo);
 
     super.initState();
+  }
+
+
+  // Modal alert for order confirm
+  onPressOfOrderPlace(context) {
+    Alert(
+        context: context,
+        title: "Select Table",
+        content: Column(
+          children: <Widget>[
+            Text('Please call the waiter for asking the table number and proceed with the order.'),
+            TextField(
+              controller: tableController,
+              decoration: InputDecoration(
+                labelText: 'Enter Table Number*',
+              ),
+            ),
+          ],
+        ),
+        buttons: [
+          DialogButton(
+            color: Colors.red,
+            onPressed: () => orderPlacement(context),
+            child: Text(
+              "Order Place",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ]).show();
+  }
+
+  void orderPlacement(context){
+    //Here make the api call to submit cart items
+    orderPlacementAPI();
+
+    Navigator.pop(context);
+    successfulOrderPlace(context);
+  }
+
+  Future<void> orderPlacementAPI() async {
+    var response;
+    String decodedResponse = '';
+    cartPageInfo['table_no'] = tableController.text;
+    print(cartPageInfo);
+    // //API call here
+    var urlSent = Uri.encodeFull(
+        'http://dev.goolean.com/Restaurant/index.php/customer/Api/add_order_detail_for_restaurant');
+    var url = Uri.parse(urlSent);
+    try {
+      response = await http.post(url,
+          body: cartPageInfo,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+          encoding: Encoding.getByName("utf-8"));
+      decodedResponse = utf8.decode(response.bodyBytes);
+      successfulOrderPlace(context);
+
+    }
+    catch(e){
+      print('In exception');
+    }
+  }
+
+  successfulOrderPlace(context) {
+    Alert(
+        context: context,
+        title: "Success",
+        content: Text('Your order has been placed'),
+        buttons: [
+          DialogButton(
+            color: Colors.red,
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Close",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ]
+    ).show();
   }
 
   Widget build(BuildContext context) {
@@ -212,26 +293,20 @@ class _AddToCartState extends State<AddToCart> {
                               ],
                             ),
 
-                            //comments /add_order_detail_for_restaurant POST
-                            // params.put("menu_id",sMenuID);
-                            //                 params.put("admin_id", sAdminID);HRGR00005
-                            //                 params.put("cus_id", sCustomerID); this comes otp login api CUS_00007
-                            //                 params.put("customer_mobile_no", sCustomerMobileNumber);
-                            //                 params.put("table_no", sTableNumber);
-                            //                 params.put("menu_item_name", sMenuItemName);//menu name is comma separated array of items like roti,sabzi
-                            //                 params.put("quantity", sQuantity);//quantity is comma separated array of quantity, make sure quantity is in the same order like menu items
-                            //                 params.put("menu_price", sMenuPriceAPI);//comma separated price order important
-                            //                 params.put("total_item", sTotalItem);//
-                            //                 params.put("total_price", sTotalPrice);
-                            //                 params.put("gst_amount", sGst);//comma separated gst value
-                            //                 params.put("order_status", sOrderStatus); order status is pending
-                            //                 params.put("net_pay_amount",sNetPayAmount);
-                            //                 params.put("gst_amount_price",sGSTprice);// comma separated gst price
-                            //                 params.put("half_and_full_status",sItemHalfFullStatus);
-                            ElevatedButton(
-                              child: Text('PLACE ORDER'),
-                              onPressed: () => {},
-                            ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                              MaterialStateProperty.all<Color>(
+                                  Colors.red)),
+                          onPressed: () => onPressOfOrderPlace(
+                              context),
+                          child: Text(
+                            'Place Order',
+                            style: TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.white),
+                          ),
+                        ),
                           ],
                         ))),
               ],
