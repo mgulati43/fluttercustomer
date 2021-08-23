@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'OtpScreen.dart';
+import 'HomeScreen.dart';
+
 
 
 void main() {
@@ -54,12 +55,13 @@ class _LoginDemoState extends State<LoginDemo> {
     print('hii' + _phoneController.text);
     _nameSaver(_phoneController.text);
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => NotesPage()));
+        .push(MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   void _otpenter() async {
     //get device id for android device
     print('hii'+_phoneController.text);
+    _navigateToNextScreen(context);
     if (_phoneController.text == '') {
       Fluttertoast.showToast(
           msg: 'Enter Mobile Number',
