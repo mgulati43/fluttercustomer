@@ -9,14 +9,16 @@ class AddToCart extends StatefulWidget {
   final Map<String, FoodItem> cart;
   final totalcounter;
   final admin_id;
+  final gst;
 
 // receive data from the FirstScreen as a parameter
-  AddToCart({required this.cart, required this.totalcounter, required this.admin_id});
+  AddToCart({required this.cart, required this.totalcounter, required this.admin_id, required this.gst});
 }
 
 class _AddToCartState extends State<AddToCart> {
   Map<String, String> cartPageInfo = new Map<String, String>();
   final tableController = TextEditingController();
+  var totalGst = 0;
   void initState(){
 
     String menu_item_name = '';
@@ -29,9 +31,7 @@ class _AddToCartState extends State<AddToCart> {
     cartPageInfo['admin_id'] = widget.admin_id;
     cartPageInfo['cus_id'] = 'CUS_000007'; //put dynamic value from OTP API
     cartPageInfo['customer_mobile_no'] = '9899988817'; //put dynamic value from OTP API
-    cartPageInfo['table_no'] = '34'; //replace with real value
     cartPageInfo['total_price'] = widget.totalcounter.toString();
-    cartPageInfo['gst_amount'] = '20';
     cartPageInfo['total_item'] = widget.cart.length.toString();
     cartPageInfo['net_pay_amount'] = widget.totalcounter.toString();
 
@@ -40,16 +40,17 @@ class _AddToCartState extends State<AddToCart> {
     for (var k in widget.cart.keys) {
       menu_item_name += widget.cart[k]!.menu_name.toString() + ',';
       menu_id += widget.cart[k]!.menu_id.toString() + ',';
-      gst_amount += '20,'; // Replace this with dynamic gst value
-      gst_amount_price += '30,'; //Replace this with dynamic gst value
+      gst_amount += widget.cart[k]!.gst.toString() + ',';
+      gst_amount_price += widget.cart[k]!.menu_fix_price_gst.toString() + ',';
       quantity += widget.cart[k]!.quantity.toString()+ ',';
       menu_price += widget.cart[k]!.menu_fix_price.toString() + ',';
-      half_and_full_status += 'F,';
+      half_and_full_status += 'F,'; //Dont know what to do with this since this in not in API
     }
 
     cartPageInfo['menu_item_name'] = menu_item_name;
     cartPageInfo['menu_id'] = menu_id;
-
+    cartPageInfo['gst_amount'] = gst_amount;
+    cartPageInfo['gst_amount_price'] = gst_amount_price;
     cartPageInfo['quantity'] = quantity;
     cartPageInfo['menu_price'] = menu_price;
     cartPageInfo['half_and_full_status'] = half_and_full_status;
@@ -91,8 +92,7 @@ class _AddToCartState extends State<AddToCart> {
     //Here make the api call to submit cart items
     orderPlacementAPI();
 
-    Navigator.pop(context);
-    successfulOrderPlace(context);
+
   }
 
   Future<void> orderPlacementAPI() async {
@@ -110,7 +110,17 @@ class _AddToCartState extends State<AddToCart> {
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
           encoding: Encoding.getByName("utf-8"));
       decodedResponse = utf8.decode(response.bodyBytes);
-      successfulOrderPlace(context);
+      print(decodedResponse);
+      var orderStatus = jsonDecode(decodedResponse)['data']["status"] as String;
+      var orderMessage = jsonDecode(decodedResponse)['data']["message"] as String;
+      Navigator.pop(context);
+      if(orderStatus == '1'){
+        successfulOrderPlace(context);
+      }
+      else{
+        failedOrderPlace(context, orderMessage);
+      }
+
 
     }
     catch(e){
@@ -136,11 +146,29 @@ class _AddToCartState extends State<AddToCart> {
     ).show();
   }
 
+  failedOrderPlace(context, orderMessage) {
+    Alert(
+        context: context,
+        title: "Failure",
+        content: Text(orderMessage),
+        buttons: [
+          DialogButton(
+            color: Colors.red,
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Close",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ]
+    ).show();
+  }
+
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.orange,
               //add back arrow
             ),
             body: Column(
@@ -260,7 +288,7 @@ class _AddToCartState extends State<AddToCart> {
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(
                                       10, 10, 100, 10),
-                                  child: Text('',
+                                  child: Text(widget.totalcounter.toString(),
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 20)),
@@ -268,28 +296,26 @@ class _AddToCartState extends State<AddToCart> {
                               ],
                             ),
                             Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
                               children: [
-                                Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Padding(
+                                Padding(
                                       padding:
                                       const EdgeInsets.all(10.0),
                                       child: Text('GST amount ',
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 20)),
-                                    )),
-                                Align(
-                                    alignment: Alignment.topRight,
-                                    child: Padding(
+                                    ),
+                                Padding(
                                       padding:
                                       const EdgeInsets.fromLTRB(
-                                          100.0, 0.0, 0.0, 0.0),
-                                      child: Text('',
+                                          10, 10, 100, 10),
+                                      child: Text(widget.gst.toString(),
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 20)),
-                                    )),
+                                    ),
                               ],
                             ),
 

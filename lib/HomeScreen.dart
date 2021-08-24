@@ -56,21 +56,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => RestDetail(rest: restaurant)));
   }
-
-  //Delete this
-  void _navigateOrderPage(
-      BuildContext context) {
-    FoodItem food1 = FoodItem(menu_fix_price: '100', menu_id: 'MENU_00006', menu_image: 'asd', menu_name: 'Paneer');
-    FoodItem food2 = FoodItem(menu_fix_price: '200', menu_id: 'MENU_00007', menu_image: 'asd', menu_name: 'Soup');
-    food1.quantity = 2;
-    Map<String, FoodItem> mapToPass = {
-      food1.menu_id?? '': food1,
-      food2.menu_id?? '': food2
-    };
-
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => AddToCart(cart: mapToPass, admin_id: 'HRGR00001',totalcounter: '500')));
-  }
+  
 
 //calling post request fetching restaurant list
   void callListApi() async {
@@ -198,21 +184,6 @@ class _HomePageState extends State<HomePage> {
             controller: controller,
             scrollDirection: Axis.horizontal,
             children: banners,
-          ),
-        ),
-        //Remove the below code
-        ElevatedButton(
-          style: ButtonStyle(
-              backgroundColor:
-              MaterialStateProperty.all<Color>(
-                  Colors.red)),
-          onPressed: () => _navigateOrderPage(
-              context),
-          child: Text(
-            'SEE MENU',
-            style: TextStyle(
-                fontSize: 12.0,
-                color: Colors.white),
           ),
         ),
         Expanded(
