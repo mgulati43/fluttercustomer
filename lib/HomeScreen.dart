@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_testting/AddToCart.dart';
 import 'package:http/http.dart' as http;
 import 'sideBar.dart';
 import 'RestaurantDetail.dart';
+import 'AddToCart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -53,6 +56,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => RestDetail(rest: restaurant)));
   }
+  
 
 //calling post request fetching restaurant list
   void callListApi() async {
