@@ -9,7 +9,7 @@ class _MenuHeaderState extends State<MenuHeader> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color.fromRGBO(19, 22, 40, 1),
+      color: Colors.deepOrange,
       width: double.infinity,
       height: 200,
       padding: EdgeInsets.only(top: 20.0),

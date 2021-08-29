@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_testting/ViewOrder.dart';
 import './menu_header.dart';
 import 'HomeScreen.dart';
 import 'Profile.dart';
+import 'ViewOrder.dart';
 
 
 class SideBar extends StatefulWidget {
@@ -35,7 +37,7 @@ class _SideBarState extends State<SideBar> {
         // shows the list of menu drawer
         children: [
           menuItem(1, "Profile", Icons.emoji_food_beverage),
-          menuItem(1, "My Orders", Icons.emoji_food_beverage),
+          menuItem(2, "My Orders", Icons.emoji_food_beverage),
           menuItem(1, "Notifications", Icons.emoji_food_beverage),
           menuItem(1, "About Us", Icons.emoji_food_beverage),
           menuItem(1, "Contact us", Icons.emoji_food_beverage),
@@ -67,7 +69,7 @@ class _SideBarState extends State<SideBar> {
              else if (id == 2) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotesPage()),
+                MaterialPageRoute(builder: (context) => ViewOrder()),
               );
             } else if (id == 3) {
               Navigator.push(

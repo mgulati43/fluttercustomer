@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'HomeScreen.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'AddToCart.dart';
 
 class RestDetail extends StatefulWidget {
