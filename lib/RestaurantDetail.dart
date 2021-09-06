@@ -165,7 +165,7 @@ class _RestDetailState extends State<RestDetail>
 
   void navigateToOrderPage(context){
     Navigator.of(context).push(
-    MaterialPageRoute(builder: (context) => AddToCart(cart: cartMap, admin_id: admin,totalcounter: totalcounter, gst: totalGST)));
+        MaterialPageRoute(builder: (context) => AddToCart(cart: cartMap, admin_id: admin,totalcounter: totalcounter, gst: totalGST)));
   }
 
   List<Widget> tabHeaders() {
@@ -220,10 +220,11 @@ class _RestDetailState extends State<RestDetail>
                                     borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(10.0),
                                         bottomLeft: Radius.circular(10.0)),
-                                    child: _displayImage(base64Decode(
-                                        completeList[cat][index]
-                                            .foodItem[indexAnother]
-                                            .menu_image))),
+                                    // child: _displayImage(base64Decode(
+                                    //     completeList[cat][index]
+                                    //         .foodItem[indexAnother]
+                                    //         .menu_image))
+                                ),
                                 Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.all(4.0),

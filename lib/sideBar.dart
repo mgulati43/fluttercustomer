@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_testting/ViewOrder.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import './menu_header.dart';
+
+import 'Contactus.dart';
 import 'HomeScreen.dart';
 import 'Profile.dart';
 import 'ViewOrder.dart';
@@ -38,12 +41,12 @@ class _SideBarState extends State<SideBar> {
         children: [
           menuItem(1, "Profile", Icons.emoji_food_beverage),
           menuItem(2, "My Orders", Icons.emoji_food_beverage),
-          menuItem(1, "Notifications", Icons.emoji_food_beverage),
-          menuItem(1, "About Us", Icons.emoji_food_beverage),
-          menuItem(1, "Contact us", Icons.emoji_food_beverage),
-          menuItem(1, "Feedback", Icons.emoji_food_beverage),
-          menuItem(1, "Share App", Icons.emoji_food_beverage),
-          menuItem(1, "Logout", Icons.emoji_food_beverage)
+          menuItem(3, "Notifications", Icons.emoji_food_beverage),
+          menuItem(4, "About Us", Icons.emoji_food_beverage),
+          menuItem(5, "Contact us", Icons.emoji_food_beverage),
+          menuItem(6, "Feedback", Icons.emoji_food_beverage),
+          menuItem(7, "Share App", Icons.emoji_food_beverage),
+          menuItem(8, "Logout", Icons.emoji_food_beverage)
           // menuItem(2, "My Orders", Icons.people_alt_outlined),
           // menuItem(3, "Calendar", Icons.event),
           // menuItem(4, "Notes", Icons.notes),
@@ -77,6 +80,14 @@ class _SideBarState extends State<SideBar> {
                 MaterialPageRoute(builder: (context) => NotesPage()),
               );
             } else if (id == 4) {
+              Fluttertoast.showToast(
+                  msg: 'Enter Mobile Number',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => NotesPage()),
@@ -84,7 +95,7 @@ class _SideBarState extends State<SideBar> {
             } else if (id == 5) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotesPage()),
+                MaterialPageRoute(builder: (context) => Contactus()),
               );
             } else if (id == 6) {
               Navigator.push(

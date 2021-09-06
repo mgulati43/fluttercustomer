@@ -300,39 +300,39 @@ class _AddToCartState extends State<AddToCart> {
                               MainAxisAlignment.spaceBetween,
                               children: [
                                 Padding(
-                                      padding:
-                                      const EdgeInsets.all(10.0),
-                                      child: Text('GST amount ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20)),
-                                    ),
+                                  padding:
+                                  const EdgeInsets.all(10.0),
+                                  child: Text('GST amount ',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20)),
+                                ),
                                 Padding(
-                                      padding:
-                                      const EdgeInsets.fromLTRB(
-                                          10, 10, 100, 10),
-                                      child: Text(widget.gst.toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20)),
-                                    ),
+                                  padding:
+                                  const EdgeInsets.fromLTRB(
+                                      10, 10, 100, 10),
+                                  child: Text(widget.gst.toString(),
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20)),
+                                ),
                               ],
                             ),
 
-                        ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor:
-                              MaterialStateProperty.all<Color>(
-                                  Colors.red)),
-                          onPressed: () => onPressOfOrderPlace(
-                              context),
-                          child: Text(
-                            'Place Order',
-                            style: TextStyle(
-                                fontSize: 12.0,
-                                color: Colors.white),
-                          ),
-                        ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                  MaterialStateProperty.all<Color>(
+                                      Colors.red)),
+                              onPressed: () => onPressOfOrderPlace(
+                                  context),
+                              child: Text(
+                                'Place Order',
+                                style: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Colors.white),
+                              ),
+                            ),
                           ],
                         ))),
               ],

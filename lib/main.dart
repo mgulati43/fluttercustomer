@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'HomeScreen.dart';
+import 'OtpScreen.dart';
 
 
 
@@ -99,27 +100,15 @@ class _LoginDemoState extends State<LoginDemo> {
           Map<String, dynamic> mapOtpResponse = jsonDecode(decodedResponse);
           //fetch message Response status ie invalid otp or valid otp
           String messageResponse = mapOtpResponse['data']['message'];
+
+          String cus_id = mapOtpResponse['data']['cus_id'];
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('cus_id', cus_id);
           //if messageResponse is invalid otp display the message of invalid otp
           //else proceed to homescreen
           print('demo' + messageResponse);
 
           if (messageResponse == 'Success') {
-            Fluttertoast.showToast(
-              msg: messageResponse,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.SNACKBAR,
-              backgroundColor: Colors.red,
-              textColor: Colors.black,
-              fontSize: 16.0,
-            );
-            Fluttertoast.showToast(
-              msg: "",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.SNACKBAR,
-              backgroundColor: Colors.red,
-              textColor: Colors.black,
-              fontSize: 16.0,
-            );
             _navigateToNextScreen(context);
           } else {
             Fluttertoast.showToast(
