@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'sideBar.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'AddMore.dart';
 
 class ViewOrder extends StatefulWidget {
   @override
@@ -75,6 +76,12 @@ class _ViewOrderState extends State<ViewOrder> {
     } catch (e) {}
   }
 
+  void _navigateAddMorePage(
+      BuildContext context, Order orderData) {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => AddMore(orderData: orderData)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -108,9 +115,9 @@ class _ViewOrderState extends State<ViewOrder> {
                                     padding: EdgeInsets.all(10),
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      MainAxisAlignment.start,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
+                                      CrossAxisAlignment.stretch,
                                       children: [
                                         Text(
                                           orderItems[index].restaurentName ??
@@ -122,7 +129,7 @@ class _ViewOrderState extends State<ViewOrder> {
                                         SizedBox(height: 10),
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                                 'ORDER-ID: ' +
@@ -145,19 +152,19 @@ class _ViewOrderState extends State<ViewOrder> {
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
-                                                          FontWeight.bold,
+                                                      FontWeight.bold,
                                                       color: Colors.black)),
                                               Text('QUANTITY',
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
-                                                          FontWeight.bold,
+                                                      FontWeight.bold,
                                                       color: Colors.black)),
                                               Text('PRICE',
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
-                                                          FontWeight.bold,
+                                                      FontWeight.bold,
                                                       color: Colors.black)),
                                             ]),
                                           ],
@@ -172,7 +179,7 @@ class _ViewOrderState extends State<ViewOrder> {
                                         ListView.builder(
                                             controller: _controller,
                                             physics:
-                                                const AlwaysScrollableScrollPhysics(),
+                                            const AlwaysScrollableScrollPhysics(),
                                             scrollDirection: Axis.vertical,
                                             shrinkWrap: true,
                                             itemCount: orderItems[index]
@@ -182,52 +189,52 @@ class _ViewOrderState extends State<ViewOrder> {
                                                 (context, anotherIndex) {
                                               return Container(
                                                   child: Row(
-                                                mainAxisAlignment:
+                                                    mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceBetween,
-                                                crossAxisAlignment:
+                                                    crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                children: [
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                        orderItems[index]
-                                                            .orderItem![
-                                                                anotherIndex]
-                                                            .menuName,
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            color:
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Text(
+                                                            orderItems[index]
+                                                                .orderItem![
+                                                            anotherIndex]
+                                                                .menuName,
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                color:
                                                                 Colors.black)),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                        orderItems[index]
-                                                            .orderItem![
-                                                                anotherIndex]
-                                                            .quantity,
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            color:
+                                                      ),
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Text(
+                                                            orderItems[index]
+                                                                .orderItem![
+                                                            anotherIndex]
+                                                                .quantity,
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                color:
                                                                 Colors.black)),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                        orderItems[index]
-                                                            .orderItem![
-                                                                anotherIndex]
-                                                            .price,
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
+                                                      ),
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Text(
+                                                            orderItems[index]
+                                                                .orderItem![
+                                                            anotherIndex]
+                                                                .price,
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
                                                                 FontWeight.bold,
-                                                            color:
+                                                                color:
                                                                 Colors.black)),
-                                                  ),
-                                                ],
-                                              ));
+                                                      ),
+                                                    ],
+                                                  ));
                                             }),
                                         Divider(
                                           color: Colors.orange,
@@ -254,9 +261,10 @@ class _ViewOrderState extends State<ViewOrder> {
                                           decoration: BoxDecoration(
                                               color: Colors.deepOrange,
                                               borderRadius:
-                                                  BorderRadius.circular(20)),
+                                              BorderRadius.circular(20)),
                                           child: FlatButton(
-                                            onPressed: () => {},
+                                            onPressed: () =>
+                                                _navigateAddMorePage(context, orderItems[index]),
                                             child: Text(
                                               'ADD MORE ITEMS',
                                               style: TextStyle(
@@ -282,16 +290,23 @@ class Order {
   List<OrderItem>? orderItem = [];
   String? restaurentName;
   String? order_status;
+  String? admin_id;
+  String? order_id;
+  String? waiter_mobile_no;
 
   Order(
       {this.new_order_id,
-      this.table_no,
-      this.menu_item_name,
-      this.quantity,
-      this.menu_price,
-      this.orderItem,
-      this.restaurentName,
-      this.order_status});
+        this.table_no,
+        this.menu_item_name,
+        this.quantity,
+        this.menu_price,
+        this.orderItem,
+        this.restaurentName,
+        this.order_status,
+        this.admin_id,
+        this.order_id,
+        this.waiter_mobile_no
+        });
 
   factory Order.fromJson(dynamic json) {
     return Order(
@@ -301,7 +316,11 @@ class Order {
         quantity: json['quantity'],
         menu_price: json['menu_price'],
         restaurentName: json['RestaurentName'],
-        order_status: json['order_status']);
+        order_status: json['order_status'],
+        admin_id: json['admin_id'],
+        order_id: json['order_id'],
+        waiter_mobile_no: json['waiter_mobile_no']
+    );
   }
 }
 

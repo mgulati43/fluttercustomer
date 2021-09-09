@@ -80,14 +80,7 @@ class _SideBarState extends State<SideBar> {
                 MaterialPageRoute(builder: (context) => NotesPage()),
               );
             } else if (id == 4) {
-              Fluttertoast.showToast(
-                  msg: 'Enter Mobile Number',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => NotesPage()),

@@ -10,9 +10,12 @@ class AddToCart extends StatefulWidget {
   final totalcounter;
   final admin_id;
   final gst;
+  String? tableNumber;
+  String? order_id;
+  String? waiter_mobile_no;
 
 // receive data from the FirstScreen as a parameter
-  AddToCart({required this.cart, required this.totalcounter, required this.admin_id, required this.gst});
+  AddToCart({required this.cart, required this.totalcounter, required this.admin_id, required this.gst, this.tableNumber, this.order_id, this.waiter_mobile_no});
 }
 
 class _AddToCartState extends State<AddToCart> {
@@ -29,7 +32,10 @@ class _AddToCartState extends State<AddToCart> {
     String menu_price = '';
     String half_and_full_status = '';
     cartPageInfo['admin_id'] = widget.admin_id;
-    cartPageInfo['cus_id'] = 'CUS_000007'; //put dynamic value from OTP API
+    if(widget.tableNumber == '' || widget.tableNumber == null) {
+      cartPageInfo['cus_id'] = 'CUS_000007'; //put dynamic value from OTP API
+    }
+
     cartPageInfo['customer_mobile_no'] = '9899988817'; //put dynamic value from OTP API
     cartPageInfo['total_price'] = widget.totalcounter.toString();
     cartPageInfo['total_item'] = widget.cart.length.toString();
@@ -62,47 +68,63 @@ class _AddToCartState extends State<AddToCart> {
 
   // Modal alert for order confirm
   onPressOfOrderPlace(context) {
-    Alert(
-        context: context,
-        title: "Select Table",
-        content: Column(
-          children: <Widget>[
-            Text('Please call the waiter for asking the table number and proceed with the order.'),
-            TextField(
-              controller: tableController,
-              decoration: InputDecoration(
-                labelText: 'Enter Table Number*',
+
+    if(widget.tableNumber != '' || widget.tableNumber != null){
+      orderPlacement(context);
+    }
+    else {
+      Alert(
+          context: context,
+          title: "Select Table",
+          content: Column(
+            children: <Widget>[
+              Text(
+                  'Please call the waiter for asking the table number and proceed with the order.'),
+              TextField(
+                controller: tableController,
+                decoration: InputDecoration(
+                  labelText: 'Enter Table Number*',
+                ),
               ),
-            ),
-          ],
-        ),
-        buttons: [
-          DialogButton(
-            color: Colors.red,
-            onPressed: () => orderPlacement(context),
-            child: Text(
-              "Order Place",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
+            ],
+          ),
+          buttons: [
+            DialogButton(
+              color: Colors.red,
+              onPressed: () => orderPlacement(context),
+              child: Text(
+                "Order Place",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ]).show();
+    }
   }
 
   void orderPlacement(context){
     //Here make the api call to submit cart items
     orderPlacementAPI();
-
-
   }
 
   Future<void> orderPlacementAPI() async {
     var response;
     String decodedResponse = '';
-    cartPageInfo['table_no'] = tableController.text;
+    var urlSent;
+    if(widget.tableNumber != '' || widget.tableNumber != null){
+      cartPageInfo['order_id'] = widget.order_id!;
+      cartPageInfo['table_no'] = widget.tableNumber!;
+      cartPageInfo['waiter_mobile_no'] = widget.waiter_mobile_no!;
+      urlSent = Uri.encodeFull(
+          'http://dev.goolean.com/Restaurant/index.php/customer/Api/change_order_for_particular_customer');
+    }
+    else {
+      cartPageInfo['table_no'] = tableController.text;
+      urlSent = Uri.encodeFull(
+          'http://dev.goolean.com/Restaurant/index.php/customer/Api/add_order_detail_for_restaurant');
+    }
     print(cartPageInfo);
     // //API call here
-    var urlSent = Uri.encodeFull(
-        'http://dev.goolean.com/Restaurant/index.php/customer/Api/add_order_detail_for_restaurant');
+
     var url = Uri.parse(urlSent);
     try {
       response = await http.post(url,

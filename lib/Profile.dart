@@ -31,7 +31,8 @@ class _NotesPageState extends State<NotesPage> {
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                 hintText: 'Text here..',
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: TextStyle(color:
+                Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 ),
