@@ -28,14 +28,9 @@ dependencies:
   pinput: ^1.2.0
   http: any
   device_info: ^2.0.0
-  dio: ^4.0.0
   fluttertoast: ^8.0.6
   shared_preferences: ^2.0.5
   circular_countdown_timer: ^0.2.0
-  flutter_rating_bar: ^4.0.0
-  visibility_detector: ^0.1.5
-
-  sliding_up_panel: ^2.0.0+1
   rflutter_alert:
     git: git://github.com/RatelHub/rflutter_alert.git
 

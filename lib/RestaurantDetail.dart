@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'HomeScreen.dart';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'AddToCart.dart';
+import 'sideBar.dart';
 
 class RestDetail extends StatefulWidget {
   _RestDetailState createState() => _RestDetailState();
@@ -18,7 +17,6 @@ class RestDetail extends StatefulWidget {
 class _RestDetailState extends State<RestDetail>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  final PanelController _pc = new PanelController();
   var cartMap = new Map<String, FoodItem>();
   List completeList = [];
   bool _loading = true;
@@ -348,10 +346,13 @@ class _RestDetailState extends State<RestDetail>
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
+        drawer: SideBar(),
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          //add back arrow
+          backgroundColor: Colors.deepOrange,
+          title: Text("Smart Dine"),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: _loading == false
             ? Padding(
@@ -548,27 +549,28 @@ class _RestDetailState extends State<RestDetail>
                   /* [Column(children: tabDataList(),),Container(),Container(),Container(),] */
                 ),
               ),
-              SlidingUpPanel(
-                collapsed: Column(
-                  children: [
-                    InkWell(
-                        child: Text('VIEW CART',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold)),
-                        onTap: () {
-                          navigateToOrderPage(context);
-                        })
-                  ],
+              Expanded(
+                child: Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: Container(
+                    height: 50,
+                    width: 250,
+                    decoration: BoxDecoration(
+                        color: Colors.deepOrange,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: FlatButton(
+                      onPressed: () => navigateToOrderPage(context),
+                      child: Text(
+                        'View Cart',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                 ),
-                panel: Text(''),
-                minHeight: 40,
-                maxHeight:400,
-                color: Colors.orange,
-                backdropOpacity: 0.5,
-                controller: _pc,
-              ),
+              )
             ],
           ),
         )

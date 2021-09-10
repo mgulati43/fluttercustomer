@@ -3,9 +3,12 @@ import 'package:http/http.dart' as http;
 import 'RestaurantDetail.dart';
 import 'dart:convert';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'ViewOrder.dart';
+import 'sideBar.dart';
 
 class AddToCart extends StatefulWidget {
   _AddToCartState createState() => _AddToCartState();
+
   final Map<String, FoodItem> cart;
   final totalcounter;
   final admin_id;
@@ -23,7 +26,7 @@ class _AddToCartState extends State<AddToCart> {
   final tableController = TextEditingController();
   var totalGst = 0;
   void initState(){
-
+    widget.tableNumber = widget.tableNumber ?? '';
     String menu_item_name = '';
     String menu_id = '';
     String gst_amount = '';
@@ -32,7 +35,7 @@ class _AddToCartState extends State<AddToCart> {
     String menu_price = '';
     String half_and_full_status = '';
     cartPageInfo['admin_id'] = widget.admin_id;
-    if(widget.tableNumber == '' || widget.tableNumber == null) {
+    if(widget.tableNumber == '') {
       cartPageInfo['cus_id'] = 'CUS_000007'; //put dynamic value from OTP API
     }
 
@@ -69,7 +72,8 @@ class _AddToCartState extends State<AddToCart> {
   // Modal alert for order confirm
   onPressOfOrderPlace(context) {
 
-    if(widget.tableNumber != '' || widget.tableNumber != null){
+    print(widget.tableNumber);
+    if(widget.tableNumber != ''){
       orderPlacement(context);
     }
     else {
@@ -110,7 +114,7 @@ class _AddToCartState extends State<AddToCart> {
     var response;
     String decodedResponse = '';
     var urlSent;
-    if(widget.tableNumber != '' || widget.tableNumber != null){
+    if(widget.tableNumber != ''){
       cartPageInfo['order_id'] = widget.order_id!;
       cartPageInfo['table_no'] = widget.tableNumber!;
       cartPageInfo['waiter_mobile_no'] = widget.waiter_mobile_no!;
@@ -150,15 +154,25 @@ class _AddToCartState extends State<AddToCart> {
     }
   }
 
+   navigateToViewOrderPage(BuildContext context){
+
+    Navigator.pop(context);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => ViewOrder()));
+  }
   successfulOrderPlace(context) {
     Alert(
+        style: AlertStyle(
+            animationType: AnimationType.fromTop,
+            isCloseButton: true,
+            isOverlayTapDismiss: true),
         context: context,
         title: "Success",
         content: Text('Your order has been placed'),
         buttons: [
           DialogButton(
             color: Colors.red,
-            onPressed: () => Navigator.pop(context),
+            onPressed: navigateToViewOrderPage(context),
             child: Text(
               "Close",
               style: TextStyle(color: Colors.white, fontSize: 20),
@@ -166,6 +180,8 @@ class _AddToCartState extends State<AddToCart> {
           )
         ]
     ).show();
+
+
   }
 
   failedOrderPlace(context, orderMessage) {
@@ -187,11 +203,15 @@ class _AddToCartState extends State<AddToCart> {
   }
 
   Widget build(BuildContext context) {
+
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
+            drawer: SideBar(),
             appBar: AppBar(
-              backgroundColor: Colors.orange,
-              //add back arrow
+              backgroundColor: Colors.deepOrange,
+              title: Text("Smart Dine"),
+              iconTheme: IconThemeData(color: Colors.white),
             ),
             body: Column(
               children: [

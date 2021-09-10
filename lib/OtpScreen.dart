@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'HomeScreen.dart';
+import 'sideBar.dart';
 
 class NotesPage extends StatefulWidget {
   @override
@@ -302,7 +303,12 @@ class _NotesPageState extends State<NotesPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: null,
+        drawer: SideBar(),
+        appBar: AppBar(
+          backgroundColor: Colors.deepOrange,
+          title: Text("Smart Dine"),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
         resizeToAvoidBottomInset: false,
         body: Column(
           children: <Widget>[

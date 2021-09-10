@@ -22,7 +22,7 @@ class _MenuHeaderState extends State<MenuHeader> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: AssetImage('logos/genericUserIcon.png'),
+                image: AssetImage('assets/userIcon.png'),
               ),
             ),
           ),

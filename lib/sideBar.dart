@@ -39,14 +39,14 @@ class _SideBarState extends State<SideBar> {
       child: Column(
         // shows the list of menu drawer
         children: [
-          menuItem(1, "Profile", Icons.emoji_food_beverage),
+          menuItem(1, "Home", Icons.home),
           menuItem(2, "My Orders", Icons.emoji_food_beverage),
-          menuItem(3, "Notifications", Icons.emoji_food_beverage),
-          menuItem(4, "About Us", Icons.emoji_food_beverage),
-          menuItem(5, "Contact us", Icons.emoji_food_beverage),
-          menuItem(6, "Feedback", Icons.emoji_food_beverage),
-          menuItem(7, "Share App", Icons.emoji_food_beverage),
-          menuItem(8, "Logout", Icons.emoji_food_beverage)
+          menuItem(3, "Notifications", Icons.notification_important),
+          menuItem(4, "About Us", Icons.account_box_outlined),
+          menuItem(5, "Contact us", Icons.contact_phone_outlined),
+          menuItem(6, "Feedback", Icons.feedback),
+          menuItem(7, "Share App", Icons.share),
+          menuItem(8, "Logout", Icons.logout)
           // menuItem(2, "My Orders", Icons.people_alt_outlined),
           // menuItem(3, "Calendar", Icons.event),
           // menuItem(4, "Notes", Icons.notes),
@@ -66,7 +66,7 @@ class _SideBarState extends State<SideBar> {
             if (id == 1) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotesPage()),
+                MaterialPageRoute(builder: (context) => HomePage()),
               );
             }
              else if (id == 2) {

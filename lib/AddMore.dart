@@ -341,6 +341,7 @@ class _AddMoreState extends State<AddMore> with SingleTickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         drawer: SideBar(),
         appBar: AppBar(

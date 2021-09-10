@@ -1,13 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_testting/AddToCart.dart';
 import 'package:http/http.dart' as http;
 import 'sideBar.dart';
 import 'RestaurantDetail.dart';
-import 'AddToCart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -171,9 +166,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       drawer: SideBar(),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.deepOrange,
         title: Text("Smart Dine"),
-        iconTheme: IconThemeData(color: Colors.orange),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Column(children: [
         _searchBar(),

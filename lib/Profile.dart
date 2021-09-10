@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'sideBar.dart';
 
 class NotesPage extends StatefulWidget {
   @override
@@ -9,9 +10,12 @@ class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      drawer: SideBar(),
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(19, 22, 40, 1),
-        title: Text("Feedback"),
+        backgroundColor: Colors.deepOrange,
+        title: Text("Smart Dine"),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Column(
         children: [
